@@ -10,7 +10,23 @@ router.get('/', function(req, res) {
         if (err) throw err;
       	res.json(products);
     });
+});
 
+router.get('/categories', function(req, res) {    
+    var collection = db.get('categories');
+    collection.find({}, function(err, categories){
+        if (err) throw err;
+      	res.json(categories);
+    });
+});
+
+router.get('/categories/:id', function(req, res) { 	
+    var collection = db.get('products');    
+    var tempid = parseInt(req.params.id);
+    collection.find({category:tempid}, function(err, products){
+        if (err) throw err;               
+      	res.json(products);
+    });
 });
 
 
