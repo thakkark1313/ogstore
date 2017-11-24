@@ -30,8 +30,16 @@ app.controller('HeaderCtrl', ['$scope',
             var productListScope = angular.element(document.querySelectorAll('[selector="productList"]')).scope();
             if(productListScope != undefined)            
                 productListScope.searchField.title = newValue;
+        });    
+}]);
+
+app.controller('LeftBannerCtrl', ['$scope', '$resource', 
+    function($scope, $resource) {
+        var Categories = $resource('/api/products/categories');
+        Categories.query(function(categories){            
+            $scope.categories = categories;
         });
-    }]);
+}]);
 
 
 app.controller('HomeCtrl', ['$scope', '$resource', 'categoryservice', 
@@ -43,11 +51,6 @@ app.controller('HomeCtrl', ['$scope', '$resource', 'categoryservice',
         $scope.searchField = {
             title: ''
         }        
-        var Categories = $resource('/api/products/categories');
-        Categories.query(function(categories){
-            categoryservice.setCategories(categories);
-            $scope.categories = categories;
-        });
 }]);
 
 app.controller('CategoryCtrl', ['$scope', '$resource', '$routeParams', 'categoryservice',

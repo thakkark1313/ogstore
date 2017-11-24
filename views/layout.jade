@@ -26,7 +26,8 @@ html(ng-app='ogstore')
     
   body
     div(ng-include="'partials/header.html'")
-    block content    
+    div(class="banner")            
+      block content    
     div(ng-include="'/partials/footer.html'")
     script(type='text/javascript').
       jQuery(document).ready(function($) {
