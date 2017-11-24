@@ -28,6 +28,9 @@ app.controller('HomeCtrl', ['$scope', '$resource', 'categoryservice',
         Products.query(function(products){
             $scope.products = products;            
         });
+        $scope.searchField = {
+            title: ''
+        }
         
         var Categories = $resource('/api/products/categories');
         Categories.query(function(categories){
