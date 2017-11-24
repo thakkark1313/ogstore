@@ -71,16 +71,16 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 			<div ng-include="'partials/bannerleft.html'"></div>
 		</div>
 		<div class="w3l_banner_nav_right">
-			<div class="w3l_banner_nav_right_banner3">
+			<!--<div class="w3l_banner_nav_right_banner3">
 				<h3>Best Deals For New Products<span class="blink_me"></span></h3>
-			</div>
+			</div>-->
 			<div class="agileinfo_single">
 				<h5>charminar pulao basmati rice 5 kg</h5>
 				<div class="col-md-4 agileinfo_single_left">
-					<img id="example" src="images/76.png" alt=" " class="img-responsive" />
+					<img id="example" src="images/{{product.picture}}.png" alt=" " class="img-responsive" />
 				</div>
 				<div class="col-md-8 agileinfo_single_right">
-					<div class="rating1">
+					<!--<div class="rating1">
 						<span class="starRating">
 							<input id="rating5" type="radio" name="rating" value="5">
 							<label for="rating5">5</label>
@@ -93,17 +93,18 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 							<input id="rating1" type="radio" name="rating" value="1">
 							<label for="rating1">1</label>
 						</span>
-					</div>
+					</div>-->
 					<div class="w3agile_description">
 						<h4>Description :</h4>
-						<p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui 
-							officia deserunt mollit anim id est laborum.Duis aute irure dolor in 
-							reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla 
-							pariatur.</p>
+						<p>{{product.description}}</p>
+					</div>
+					<div class="w3agile_description">
+						<h4>In Stock :</h4>
+						<p>{{product.quantity}}</p>
 					</div>
 					<div class="snipcart-item block">
 						<div class="snipcart-thumb agileinfo_single_right_snipcart">
-							<h4>$21.00 <span>$25.00</span></h4>
+							<h4>${{product.price}}</h4>
 						</div>
 						<div class="snipcart-details agileinfo_single_right_details">
 							<form action="#" method="post">
