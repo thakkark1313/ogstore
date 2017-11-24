@@ -2,11 +2,13 @@ doctype html
 html(ng-app='ogstore')
   head
     title= title
-    link(rel='stylesheet', href='/stylesheets/style.css')
-    link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css')
+    link(rel='stylesheet', href='/stylesheets/style.css', type='text/css', media='all')
+    link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css', type='text/css', media='all')
+    link(rel='stylesheet', href='stylesheets/font-awesome.css', type='text/css', media='all')    
     script(src='https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.5/angular.js')
     script(src='https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.5/angular-resource.js')
     script(src='https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.5/angular-route.js')
+    script(src='javascripts/jquery-1.11.1.min.js')
     script(src='/javascripts/ogstore.js')
     script(type='application/x-javascript'). 
       addEventListener("load", function() { 
