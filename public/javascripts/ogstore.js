@@ -30,8 +30,7 @@ app.controller('HomeCtrl', ['$scope', '$resource', 'categoryservice',
         });
         $scope.searchField = {
             title: ''
-        }
-        
+        }        
         var Categories = $resource('/api/products/categories');
         Categories.query(function(categories){
             categoryservice.setCategories(categories);
@@ -69,7 +68,7 @@ app.service('categoryservice',function()
         this._categories = categories;
     }
     return {
-        getCategories     : getCategories,
-        setCategories     : setCategories
+        getCategories : getCategories,
+        setCategories : setCategories
     }
 });
