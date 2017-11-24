@@ -8,6 +8,10 @@ html(ng-app='ogstore')
     script(src='https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.5/angular-resource.js')
     script(src='https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.5/angular-route.js')
     script(src='/javascripts/ogstore.js')
+    script(type='application/x-javascript'). 
+      addEventListener("load", function() { 
+        setTimeout(hideURLbar, 0); }, false);
+      function hideURLbar(){ window.scrollTo(0,1); }
     
   body
     block content
