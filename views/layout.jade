@@ -23,6 +23,11 @@ html(ng-app='ogstore')
       addEventListener("load", function() { 
         setTimeout(hideURLbar, 0); }, false);
       function hideURLbar(){ window.scrollTo(0,1); }
+    
+  body
+    div(ng-include="'partials/header.html'")
+    block content    
+    div(ng-include="'/partials/footer.html'")
     script(type='text/javascript').
       jQuery(document).ready(function($) {
         $(".scroll").click(function(event){     
@@ -75,9 +80,4 @@ html(ng-app='ogstore')
             shadow: "0 0 5px #000"
           });
         });
-      });     
-    
-  body
-    div(ng-include="'partials/header.html'")
-    block content    
-    div(ng-include="'/partials/footer.html'")
+      });

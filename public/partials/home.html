@@ -51,7 +51,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 		<!-- // banner left -->
 
 		<div class="w3l_banner_nav_right">		
-		<div ng-repeat="product in products | filter:searchField" class="col-md-3 top_brand_left">
+		<div ng-repeat="product in products | filter:searchField" class="col-md-3 top_brand_left" selector="productList">
 					<div class="hover14 column">
 						<div class="agile_top_brand_left_grid">							
 							<div class="agile_top_brand_left_grid1">
@@ -60,7 +60,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 										<div class="snipcart-thumb">
 											<a href="#/product/{{product._id}}"><img title=" " alt=" " src="images/{{product.picture}}.png" /></a>	
 											<p>{{product.title}}</p>											
-											<h4>${{product.price}} </h4>
+											<h4>{{product.price | currency}} </h4>
 										</div>
 										<div class="snipcart-details top_brand_home_details">
 											<form action="checkout.html" method="post">

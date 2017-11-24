@@ -21,6 +21,18 @@ app.config(['$routeProvider', function($routeProvider){
         });
 }]);
 
+app.controller('HeaderCtrl', ['$scope', 
+    function($scope) {
+        $scope.searchField = {
+            title: ''
+        }  
+        $scope.$watch('searchField.title', function(newValue, oldValue) {
+            var productListScope = angular.element(document.querySelectorAll('[selector="productList"]')).scope();
+            if(productListScope != undefined)            
+                productListScope.searchField.title = newValue;
+        });
+    }]);
+
 
 app.controller('HomeCtrl', ['$scope', '$resource', 'categoryservice', 
     function($scope, $resource, categoryservice){
