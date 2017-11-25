@@ -195,10 +195,10 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 			<h3>Sign In & Sign Up</h3>
 			<div class="w3_login_module">
 				<div class="module form-module">
-				  <div class="toggle"><i class="fa fa-times fa-pencil"></i>
+				  <div class="toggle" ng-click="loginSignupToggle($event)"><i class="fa fa-times fa-pencil"></i>
 					<div class="tooltip">Click Me</div>
 				  </div>
-				  <div class="form">
+				  <div class="form" ng-if="!isSignup">
 					<h2>Login to your account</h2>
 					<form action="#" method="post">
 					  <input type="text" name="Username" placeholder="Username" required=" ">
@@ -206,7 +206,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 					  <input type="submit" value="Login">
 					</form>
 				  </div>
-				  <div class="form">
+				  <div class="form" ng-if="isSignup">
 					<h2>Create an account</h2>
 					<form action="#" method="post">
 					  <input type="text" name="Username" placeholder="Username" required=" ">
