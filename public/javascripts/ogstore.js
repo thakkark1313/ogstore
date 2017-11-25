@@ -30,7 +30,19 @@ app.controller('HeaderCtrl', ['$scope',
             var productListScope = angular.element(document.querySelectorAll('[selector="productList"]')).scope();
             if(productListScope != undefined)            
                 productListScope.searchField.title = newValue;
-        });    
+        });
+        $scope.loginMouseOver = function () {
+            $(".dropdown").hover(            
+                function() {
+                    $('.dropdown-menu', this).stop( true, true ).slideDown("fast");
+                    $(this).toggleClass('open');        
+                },
+                function() {
+                    $('.dropdown-menu', this).stop( true, true ).slideUp("fast");
+                    $(this).toggleClass('open');       
+                }
+            );
+        }    
 }]);
 
 app.controller('LeftBannerCtrl', ['$scope', '$resource', 
