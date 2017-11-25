@@ -1983,9 +1983,9 @@ var Cart = require('./cart'),
  *
  * @param {object} userConfig Configuration overrides
  */
-minicart.render = function (userConfig) {
-    confModel = minicart.config = config.load(userConfig);
-    cartModel = minicart.cart = new Cart(confModel.name, confModel.duration);
+minicart.render = function (userConfig) {    
+    confModel = minicart.config = config.load(userConfig);    
+    cartModel = minicart.cart = new Cart(confModel.name, confModel.duration);    
     viewModel = minicart.view = new View({
         config: confModel,
         cart: cartModel
@@ -2783,7 +2783,7 @@ function View(model) {
     this.isShowing = false;
 
     // HTML
-    wrapper.id = config.name;
+    wrapper.id = config.name;      
     config.parent.appendChild(wrapper);
 
     // CSS

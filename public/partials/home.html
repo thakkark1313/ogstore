@@ -61,24 +61,18 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 											<a href="#/product/{{product._id}}"><img title=" " alt=" " src="images/{{product.picture}}.png" /></a>	
 											<p>{{product.title}}</p>											
 											<h4>{{product.price | currency}} </h4>
+											<br/>
+											<label>Quantity :</label> <input type="number" name="quantity" min="1" max="10" default="1" ng-model="product.myquantity"/>
 										</div>
 										<div class="snipcart-details top_brand_home_details">
-											<form action="checkout.html" method="post">
-												<fieldset>
-													<input type="hidden" name="cmd" value="_cart" />
-													<input type="hidden" name="add" value="1" />
-													<input type="hidden" name="business" value=" " />
-													<input type="hidden" name="item_name" value="Fortune Sunflower Oil" />
-													<input type="hidden" name="amount" value="7.99" />
-													<input type="hidden" name="discount_amount" value="1.00" />
-													<input type="hidden" name="currency_code" value="USD" />
-													<input type="hidden" name="return" value=" " />
-													<input type="hidden" name="cancel_return" value=" " />
-													<input type="submit" name="submit" value="Add to cart" class="button" />
-												</fieldset>
-													
-											</form>
-									
+
+										<fieldset>																								
+											<input type="hidden" name="item_name" value="{{product.title}}" />
+											<input type="hidden" name="amount" value="{{product.price}}" />													
+										    <input type="hidden" name="currency_code" value="USD" />																					
+											<input type="submit" name="submit" value="Add to cart" class="button" ng-click="addtocart(product)"/>
+
+										</fieldset>																																													
 										</div>
 									</div>
 								</figure>

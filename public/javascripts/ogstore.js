@@ -16,6 +16,10 @@ app.config(['$routeProvider', function($routeProvider){
         	templateUrl: 'partials/single.html',
         	controller : 'ProductCtrl'
     	})
+        .when('/cart', {         
+            templateUrl: 'partials/checkout.html',
+            controller : 'CartCtrl'
+        })        
         .otherwise({
             redirectTo: '/'
         });
@@ -44,13 +48,26 @@ app.controller('LeftBannerCtrl', ['$scope', '$resource',
 
 app.controller('HomeCtrl', ['$scope', '$resource', 'categoryservice', 
     function($scope, $resource, categoryservice){
-        var Products = $resource('/api/products');
+        var Products = $resource('/api/products');        
         Products.query(function(products){
-            $scope.products = products;            
-        });
+            $scope.products = products;  
+            if($scope.products != null) {
+                angular.forEach($scope.products, function(value, key) {
+                    value.myquantity = 1;
+                });
+        }  
+        }); 
+      
         $scope.searchField = {
             title: ''
-        }        
+        }           
+        $scope.addtocart = function (product)
+        {          
+            Products = $resource('/api/products/addtocart');
+            Products.save({pid:product._id, qty:product.myquantity}, function() {
+
+            });                        
+        };
 }]);
 
 app.controller('CategoryCtrl', ['$scope', '$resource', '$routeParams', 'categoryservice',
@@ -58,7 +75,7 @@ app.controller('CategoryCtrl', ['$scope', '$resource', '$routeParams', 'category
         $scope.categories = categoryservice.getCategories();
         var Products = $resource('/api/products/categories/:id',{id:'@_id'});        
         Products.query({ id: $routeParams.id }, function(products){
-            $scope.products = products;
+            $scope.products = products;            
         });
 }]);
 
@@ -72,6 +89,14 @@ app.controller('ProductCtrl', ['$scope', '$resource', '$location', '$routeParams
         });
 }]);
 
+app.controller('CartCtrl', ['$scope', '$resource', '$routeParams', 'categoryservice', 
+    function($scope, $resource, $routeParams, categoryservice){
+        $scope.categories = categoryservice.getCategories();
+        var Cart = $resource('/api/products/cart');        
+        Cart.query(function(cartitems){
+            $scope.cartitems = cartitems;          
+        });       
+}]);
 
 app.service('categoryservice',function()
 {

@@ -1653,7 +1653,6 @@ var Product = require('./product'),
  */
 function Cart(name, duration) {
     var data, items, settings, len, i;
-
     this._items = [];
     this._settings = { bn: constants.BN };
 
@@ -1692,8 +1691,7 @@ Cart.prototype.add = function add(data) {
         items = this.items(),
         idx = false,
         isExisting = false,
-        product, key, len, i;
-
+        product, key, len, i;     
     // Prune cart settings data from the product
     for (key in data) {
         if (constants.SETTINGS.test(key)) {
@@ -1983,9 +1981,9 @@ var Cart = require('./cart'),
  *
  * @param {object} userConfig Configuration overrides
  */
-minicart.render = function (userConfig) {
-    confModel = minicart.config = config.load(userConfig);
-    cartModel = minicart.cart = new Cart(confModel.name, confModel.duration);
+minicart.render = function (userConfig) {       
+    confModel = minicart.config = config.load(userConfig);    
+    cartModel = minicart.cart = new Cart(confModel.name, confModel.duration);    
     viewModel = minicart.view = new View({
         config: confModel,
         cart: cartModel
@@ -2783,6 +2781,8 @@ function View(model) {
     this.isShowing = false;
 
     // HTML
+    console.dir(config);
+    //config.parent = document.querySelectorAll('[selector="productList"]');
     wrapper.id = config.name;
     config.parent.appendChild(wrapper);
 
@@ -2858,7 +2858,7 @@ View.prototype.bind = function bind(form) {
         form.hasMinicart = true;
     }
 
-    if (form.display) {
+    if (form.display) {      
         events.add(form, 'submit', function (e) {
             e.preventDefault();
             that.show();
