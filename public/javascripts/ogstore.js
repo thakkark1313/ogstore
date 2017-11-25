@@ -25,7 +25,8 @@ app.config(['$routeProvider', function($routeProvider){
             controller: 'LoginCtrl'
         }).
         when('/signup', {
-            templateUrl: 'partials/Login.html'
+            templateUrl: 'partials/Login.html',
+            controller: 'LoginCtrl'
         })
         .otherwise({
             redirectTo: '/'
@@ -57,19 +58,28 @@ app.controller('HeaderCtrl', ['$scope',
         }    
 }]);
 
-app.controller('LoginCtrl', ['$scope', '$resource', 
-    function($scope, $resource) {
-        $scope.isSignup = false;
+app.controller('LoginCtrl', ['$scope', '$resource', '$location', 
+    function($scope, $resource, $location) {
+        $scope.isSignup = false; 
+        $scope.lblLoginSignup = 'Sign Up';       
         $scope.loginSignupToggle = function(element) {
-            if(element.target.nodeName == "DIV")
-                $(element.target).children('i').toggleClass('fa-pencil');
+            if(element.target.nodeName == "DIV") 
+                $(element.target).parent().children('i').toggleClass('fa-pencil');
             else if(element.target.nodeName == "I")
                 $(element.target).toggleClass('fa-pencil')
-            if($scope.isSignup)
-                $scope.isSignup = false;
-            else
-                $scope.isSignup = true;                            
+            if($scope.isSignup) {
+                $scope.lblLoginSignup = 'Sign Up';
+                $scope.isSignup = false;                
+            }
+            else {
+                $scope.lblLoginSignup = 'Login';
+                $scope.isSignup = true;                                            
+            }
         };
+        if($location.path() == '/signup') {
+            var elm = {target:{nodeName: 'DIV'}};
+            $scope.loginSignupToggle(elm);
+        };        
 }]);
 
 app.controller('LeftBannerCtrl', ['$scope', '$resource', 
