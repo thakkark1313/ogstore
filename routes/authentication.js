@@ -6,7 +6,7 @@ global.userid="";
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { user : req.user });
+  res.json({ user : req.user });
 });
 
 router.get('/register', function(req, res) {
@@ -19,13 +19,8 @@ router.post('/register', function(req, res) {
             return res.render('register', { account : account });
         }
 
-        passport.authenticate('local')(req, res, function () {            
-            var result = {
-                username : req.body.username,
-                email : req.body.email,
-                phone : req.body.phone    
-            }
-            res.json(result);
+        passport.authenticate('local')(req, res, function () {          
+          res.redirect('/');
         });
     });
 });

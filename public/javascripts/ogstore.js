@@ -33,12 +33,21 @@ app.config(['$routeProvider', function($routeProvider){
         });
 }]);
 
-app.controller('HeaderCtrl', ['$scope', 
-    function($scope) {
+app.controller('HeaderCtrl', ['$scope', '$resource', 
+    function($scope, $resource) {        
+        $scope.loggedIn = false;
         $scope.searchField = {
             title: ''
-        }  
-        $scope.loggedIn = false;
+        }       
+        $scope.username = '';   
+        var User = $resource('/api/authentication');
+        User.get({}, function(user) {
+            debugger;
+            if(user.user != null && user.user.username != undefined && user.user.username != null && user.user.username != '') {
+                $scope.username = user.user.username;
+                $scope.loggedIn = true;
+            }
+        });        
         $scope.$watch('searchField.title', function(newValue, oldValue) {
             var productListScope = angular.element(document.querySelectorAll('[selector="productList"]')).scope();
             if(productListScope != undefined)            
@@ -55,11 +64,11 @@ app.controller('HeaderCtrl', ['$scope',
                     $(this).toggleClass('open');       
                 }
             );
-        }    
+        };    
 }]);
 
-app.controller('LoginCtrl', ['$scope', '$resource', '$location', 
-    function($scope, $resource, $location) {
+app.controller('LoginCtrl', ['$scope', '$resource', '$location', '$http',
+    function($scope, $resource, $location, $http) {
         $scope.isSignup = false; 
         $scope.lblLoginSignup = 'Sign Up';       
         $scope.loginSignupToggle = function(element) {
@@ -79,7 +88,7 @@ app.controller('LoginCtrl', ['$scope', '$resource', '$location',
         if($location.path() == '/signup') {
             var elm = {target:{nodeName: 'DIV'}};
             $scope.loginSignupToggle(elm);
-        };        
+        };       
 }]);
 
 app.controller('LeftBannerCtrl', ['$scope', '$resource', 
