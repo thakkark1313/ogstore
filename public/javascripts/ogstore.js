@@ -21,7 +21,8 @@ app.config(['$routeProvider', function($routeProvider){
             controller : 'CartCtrl'
         })        
         .when('/login', {
-            templateUrl: 'partials/login.html'
+            templateUrl: 'partials/login.html',            
+            controller: 'LoginCtrl'
         }).
         when('/signup', {
             templateUrl: 'partials/login.html'
@@ -54,6 +55,21 @@ app.controller('HeaderCtrl', ['$scope',
                 }
             );
         }    
+}]);
+
+app.controller('LoginCtrl', ['$scope', '$resource', 
+    function($scope, $resource) {
+        $scope.isSignup = false;
+        $scope.loginSignupToggle = function(element) {
+            if(element.target.nodeName == "DIV")
+                $(element.target).children('i').toggleClass('fa-pencil');
+            else if(element.target.nodeName == "I")
+                $(element.target).toggleClass('fa-pencil')
+            if($scope.isSignup)
+                $scope.isSignup = false;
+            else
+                $scope.isSignup = true;                            
+        };
 }]);
 
 app.controller('LeftBannerCtrl', ['$scope', '$resource', 
