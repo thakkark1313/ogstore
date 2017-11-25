@@ -16,6 +16,12 @@ app.config(['$routeProvider', function($routeProvider){
         	templateUrl: 'partials/single.html',
         	controller : 'ProductCtrl'
     	})
+        .when('/login', {
+            templateUrl: 'partials/Login.html'
+        }).
+        when('/signup', {
+            templateUrl: 'partials/Login.html'
+        })
         .otherwise({
             redirectTo: '/'
         });
@@ -26,6 +32,7 @@ app.controller('HeaderCtrl', ['$scope',
         $scope.searchField = {
             title: ''
         }  
+        $scope.loggedIn = false;
         $scope.$watch('searchField.title', function(newValue, oldValue) {
             var productListScope = angular.element(document.querySelectorAll('[selector="productList"]')).scope();
             if(productListScope != undefined)            
