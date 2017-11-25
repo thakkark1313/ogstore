@@ -21,10 +21,10 @@ app.config(['$routeProvider', function($routeProvider){
             controller : 'CartCtrl'
         })        
         .when('/login', {
-            templateUrl: 'partials/Login.html'
+            templateUrl: 'partials/login.html'
         }).
         when('/signup', {
-            templateUrl: 'partials/Login.html'
+            templateUrl: 'partials/login.html'
         })
         .otherwise({
             redirectTo: '/'
