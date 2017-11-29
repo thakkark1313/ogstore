@@ -25,12 +25,8 @@ app.config(['$routeProvider', function($routeProvider){
             controller: 'LoginCtrl'
         }).
         when('/signup', {
-<<<<<<< HEAD
-            templateUrl: 'partials/login.html'
-=======
             templateUrl: 'partials/Login.html',
             controller: 'LoginCtrl'
->>>>>>> 75407463f1dc236001bd90985474665ece1d021a
         })
         .otherwise({
             redirectTo: '/'
