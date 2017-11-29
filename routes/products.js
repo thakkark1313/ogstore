@@ -146,8 +146,7 @@ router.post('/undosafedelete', function(req, res) {
 });
 
 router.post('/editproduct', function(req, res) {
-    var collection = db.get('products');
-    console.log(req.body);
+    var collection = db.get('products');    
     collection.update(
         {
             _id: req.body._id
@@ -170,6 +169,38 @@ router.post('/editproduct', function(req, res) {
     });
 });
 
+router.post('/addproduct', function(req, res) {
+    var collection = db.get('products');
+    collection.findOne({title: req.body.title}, function(err, obj) {
+        if(err) {
+            res.json({result: false, message: 'Error occured while adding product.'});
+            throw err;
+        }
+        if(obj) {
+            res.json({result: false, message: 'Product already exists'});
+        }
+        else {
+            collection.insert(
+                {
+                    title: req.body.title,
+                    description: req.body.description,
+                    quantity: req.body.description,
+                    safedelete: false,
+                    picture: req.body.picture,
+                    category: req.body.category
+                }, 
+                function(err, product) {
+                    if(err) {
+                        res.json({result: false, message: 'Error occured while adding product.'});
+                        throw err;               
+                    }
+
+                    res.json({resut: true, message: 'Product Added Successfully'});
+            });
+        }
+    });
+});
+
 router.get('/:id',function(req,res){
 	var collection = db.get('products');
 	collection.findOne({_id:req.params.id},function(err,product){
@@ -177,4 +208,5 @@ router.get('/:id',function(req,res){
 		res.json(product);
 	});
 });
+
 module.exports = router;

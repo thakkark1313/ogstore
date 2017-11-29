@@ -2770,6 +2770,10 @@ input.checkbox:checked:after {
   display: none;
   padding: 40px;
 }
+.form-module .form1 {
+  display: block;
+  padding: 40px;
+}
 .form-module .form:nth-child(2) {
   display: block;
 }

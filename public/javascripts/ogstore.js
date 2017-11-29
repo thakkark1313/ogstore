@@ -23,10 +23,14 @@ app.config(['$routeProvider', function($routeProvider){
         .when('/login', {
             templateUrl: 'partials/login.html',            
             controller: 'LoginCtrl'
-        }).
-        when('/signup', {
-            templateUrl: 'partials/Login.html',
+        })
+        .when('/signup', {
+            templateUrl: 'partials/login.html',
             controller: 'LoginCtrl'
+        })
+        .when('/addproduct', {
+            templateUrl: 'partials/addproduct.html'
+            //controller:  'AddProductCtrl'
         })
         .otherwise({
             redirectTo: '/'
