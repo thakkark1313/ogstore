@@ -142,6 +142,7 @@ app.controller('ProductCtrl', ['$scope', '$resource', '$location', '$routeParams
     function($scope, $resource, $location, $routeParams, commonservice){
         //$scope.categories = commonservice.getCategories();
         $scope.isadmin = commonservice.getIsAdmin();
+        $scope.editproduct = false;
         var Products = $resource('/api/products/:id',{id:'@_id'});        
         Products.get({ id: $routeParams.id }, function(product){
             $scope.product = product;
@@ -161,7 +162,18 @@ app.controller('ProductCtrl', ['$scope', '$resource', '$location', '$routeParams
                     product.safedelete = false;
                 }               
             });
-        }
+        };
+        $scope.editProduct = function (product) {
+            $scope.editproduct = true;
+        };
+        $scope.saveChanges = function (producttosave) {
+            var Product = $resource('/api/products/editproduct');
+            Product.save(producttosave, function(response) {
+                if(response) {
+                    $scope.editproduct = false;          
+                }
+            });
+        };
 }]);
 
 app.controller('CartCtrl', ['$scope', '$resource', '$routeParams', 'commonservice', 

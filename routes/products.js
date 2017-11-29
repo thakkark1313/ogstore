@@ -145,6 +145,31 @@ router.post('/undosafedelete', function(req, res) {
     });  
 });
 
+router.post('/editproduct', function(req, res) {
+    var collection = db.get('products');
+    console.log(req.body);
+    collection.update(
+        {
+            _id: req.body._id
+        },
+        {
+            $set: {
+                title: req.body.title,
+                description: req.body.description,
+                quantity: req.body.quantity,
+                price: req.body.price
+            }
+        }, 
+        function(err, obj) {
+            if(err) {
+                res.json({result: false});
+                throw err;
+            }
+
+            res.json({result: true});
+    });
+});
+
 router.get('/:id',function(req,res){
 	var collection = db.get('products');
 	collection.findOne({_id:req.params.id},function(err,product){
