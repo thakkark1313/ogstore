@@ -31,6 +31,7 @@
 							</ul>
 							<ul class="dropdown-menu drp-mnu" ng-if="loggedIn">
 								<li><a href="">My History</a></li> 
+								<li ng-if="isadmin"><a href="#/addproduct">Add Product</a></li>
 								<li><a href="/api/authentication/logout">Logout</a></li>
 							</ul>
 						</div>                  

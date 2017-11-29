@@ -33,19 +33,22 @@ app.config(['$routeProvider', function($routeProvider){
         });
 }]);
 
-app.controller('HeaderCtrl', ['$scope', '$resource', 
-    function($scope, $resource) {        
+app.controller('HeaderCtrl', ['$scope', '$resource', 'commonservice', 
+    function($scope, $resource, commonservice) {        
         $scope.loggedIn = false;
+        $scope.isadmin = false;
         $scope.searchField = {
             title: ''
         }       
         $scope.username = '';   
         var User = $resource('/api/authentication');
-        User.get({}, function(user) {
-            debugger;
+        User.get({}, function(user) {            
             if(user.user != null && user.user.username != undefined && user.user.username != null && user.user.username != '') {
                 $scope.username = user.user.username;
                 $scope.loggedIn = true;
+                commonservice.setIsLoggedIn(true);                
+                $scope.isadmin = user.user.isadmin;
+                commonservice.setIsAdmin(user.user.isadmin);
             }
         });        
         $scope.$watch('searchField.title', function(newValue, oldValue) {
@@ -100,9 +103,9 @@ app.controller('LeftBannerCtrl', ['$scope', '$resource',
 }]);
 
 
-app.controller('HomeCtrl', ['$scope', '$resource', 'categoryservice', 
-    function($scope, $resource, categoryservice){
-        var Products = $resource('/api/products');        
+app.controller('HomeCtrl', ['$scope', '$resource', 'commonservice', 
+    function($scope, $resource, commonservice){        
+        var Products = $resource('/api/products');                
         Products.query(function(products){
             $scope.products = products;  
             if($scope.products != null) {
@@ -111,7 +114,7 @@ app.controller('HomeCtrl', ['$scope', '$resource', 'categoryservice',
                 });
         }  
         }); 
-      
+        $scope.isadmin = commonservice.getIsAdmin();      
         $scope.searchField = {
             title: ''
         }           
@@ -124,9 +127,9 @@ app.controller('HomeCtrl', ['$scope', '$resource', 'categoryservice',
         };
 }]);
 
-app.controller('CategoryCtrl', ['$scope', '$resource', '$routeParams', 'categoryservice',
-    function($scope, $resource, $routeParams, categoryservice){                
-        $scope.categories = categoryservice.getCategories();
+app.controller('CategoryCtrl', ['$scope', '$resource', '$routeParams', 'commonservice',
+    function($scope, $resource, $routeParams, commonservice){                
+        $scope.categories = commonservice.getCategories();
         var Products = $resource('/api/products/categories/:id',{id:'@_id'});        
         Products.query({ id: $routeParams.id }, function(products){
             $scope.products = products;            
@@ -134,25 +137,36 @@ app.controller('CategoryCtrl', ['$scope', '$resource', '$routeParams', 'category
 }]);
 
 
-app.controller('ProductCtrl', ['$scope', '$resource', '$location', '$routeParams', 'categoryservice', 
-    function($scope, $resource, $location, $routeParams, categoryservice){
-        $scope.categories = categoryservice.getCategories();
+app.controller('ProductCtrl', ['$scope', '$resource', '$location', '$routeParams', 'commonservice', 
+    function($scope, $resource, $location, $routeParams, commonservice){
+        //$scope.categories = commonservice.getCategories();
+        $scope.isadmin = commonservice.getIsAdmin();
         var Products = $resource('/api/products/:id',{id:'@_id'});        
         Products.get({ id: $routeParams.id }, function(product){
             $scope.product = product;
         });
+        $scope.safeDelete = function (product){
+            Delete = $resource('/api/products/safedelete');
+            Delete.save({productid:product._id}, function() {
+            });
+        };
+        $scope.undoSafeDelete = function (product){
+            Add = $resource('/api/products/undosafedelete');
+            Add.save({productid:product._id}, function() {                
+            });
+        }
 }]);
 
-app.controller('CartCtrl', ['$scope', '$resource', '$routeParams', 'categoryservice', 
-    function($scope, $resource, $routeParams, categoryservice){
-        $scope.categories = categoryservice.getCategories();
+app.controller('CartCtrl', ['$scope', '$resource', '$routeParams', 'commonservice', 
+    function($scope, $resource, $routeParams, commonservice){
+        $scope.categories = commonservice.getCategories();
         var Cart = $resource('/api/products/cart');        
         Cart.query(function(cartitems){
             $scope.cartitems = cartitems;          
         });       
 }]);
 
-app.service('categoryservice',function()
+app.service('commonservice',function()
 {
     var _categories;
     function getCategories () {
@@ -161,8 +175,29 @@ app.service('categoryservice',function()
     function setCategories  (categories) {
         this._categories = categories;
     }
+
+    var _isadmin = false;
+    function getIsAdmin () {
+        return this._isadmin;
+    }
+    function setIsAdmin (isadmin) {
+        this._isadmin = isadmin;
+    }
+
+    var _isloggedin = false;
+    function getIsLoggedIn () {
+        return this._isloggedin;
+    }
+    function setIsLoggedIn (isloggedin) {
+        this._isloggedin = isloggedin;
+    }
+
     return {
         getCategories : getCategories,
-        setCategories : setCategories
+        setCategories : setCategories,
+        getIsAdmin : getIsAdmin,
+        setIsAdmin : setIsAdmin,
+        getIsLoggedIn : getIsLoggedIn,
+        setIsLoggedIn : setIsLoggedIn
     }
 });

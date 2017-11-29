@@ -1,8 +1,6 @@
 var express = require('express');
 var router = express.Router();
-
 var async = require('async');
-
 var monk = require('monk');
 var db = monk('localhost:27017/ogstore');
 
@@ -70,8 +68,6 @@ router.get('/cart', function(req, res) {
     }); 
 });
 
-
-
 router.post('/addtocart', function(req, res){
     var collection = db.get('cart');
     var tempid = req.body.pid;
@@ -98,7 +94,6 @@ router.post('/addtocart', function(req, res){
         }
         else
         {
-
             collection.insert({
                 userid: t_userid,
                 productid: tempid,
@@ -109,9 +104,43 @@ router.post('/addtocart', function(req, res){
                 res.json(cartObj);
             });        
             }
-    });
+    });    
+});
 
-    
+router.post('/safedelete', function(req, res) {
+    var collection = db.get('products');
+    collection.update(
+    {
+        _id: req.body.productid
+    }, 
+    {
+        $set: {safedelete:true}
+    }, 
+    function(err, obj) { 
+        console.log(req.body.productid);  
+        console.log(obj);
+        if(err) throw err;
+
+        res.json(obj);
+    });  
+});
+
+router.post('/undosafedelete', function(req, res) {
+    var collection = db.get('products');
+    collection.update(
+    {
+        _id: req.body.productid
+    }, 
+    {
+        $set: {safedelete:false}
+    }, 
+    function(err, obj) { 
+        console.log(req.body.productid);  
+        console.log(obj);
+        if(err) throw err;
+
+        res.json(obj);
+    });  
 });
 
 router.get('/:id',function(req,res){

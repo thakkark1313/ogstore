@@ -2824,6 +2824,12 @@ input.checkbox:checked:after {
     text-decoration: none;
     font-size: 1em;
 }
+
+.adminbutton {
+    float: left;
+    margin-top: 6%;
+    padding-top: 6%;
+}
 /*-- //login --*/
 /*-----start-responsive-design------*/
 @media (max-width:1680px){
