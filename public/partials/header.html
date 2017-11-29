@@ -1,6 +1,7 @@
 	<div class="agileits_header" ng-controller='HeaderCtrl'>
 		<div class="w3l_offers">
-			<a href="products.html">Today's special Offers !</a>
+			<a ng-if="username==''" href="">Welcome Guest!!</a>
+			<a ng-if="username!=''" href="">Welcome {{username}}!!</a>
 		</div>
 		<div class="w3l_search">
 			<form action="#" method="post">
@@ -29,8 +30,8 @@
 								<li><a href="#/signup">Sign Up</a></li>
 							</ul>
 							<ul class="dropdown-menu drp-mnu" ng-if="loggedIn">
-								<li><a href="login.html">My History</a></li> 
-								<li><a href="login.html">Logout</a></li>
+								<li><a href="">My History</a></li> 
+								<li><a href="/api/authentication/logout">Logout</a></li>
 							</ul>
 						</div>                  
 					</div>	
