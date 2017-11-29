@@ -45,10 +45,11 @@ app.controller('HeaderCtrl', ['$scope', '$resource', 'commonservice',
         User.get({}, function(user) {            
             if(user.user != null && user.user.username != undefined && user.user.username != null && user.user.username != '') {
                 $scope.username = user.user.username;
-                $scope.loggedIn = true;
-                commonservice.setIsLoggedIn(true);                
+                $scope.loggedIn = true;                               
                 $scope.isadmin = user.user.isadmin;
+                angular.element(document.querySelectorAll('[selector="productList"]')).scope().isadmin = user.user.isadmin;
                 commonservice.setIsAdmin(user.user.isadmin);
+                commonservice.setIsLoggedIn(true); 
             }
         });        
         $scope.$watch('searchField.title', function(newValue, oldValue) {
@@ -147,12 +148,18 @@ app.controller('ProductCtrl', ['$scope', '$resource', '$location', '$routeParams
         });
         $scope.safeDelete = function (product){
             Delete = $resource('/api/products/safedelete');
-            Delete.save({productid:product._id}, function() {
+            Delete.save({productid:product._id}, function(response) {
+                if(response.result) {
+                    product.safedelete = true;
+                }               
             });
         };
         $scope.undoSafeDelete = function (product){
             Add = $resource('/api/products/undosafedelete');
-            Add.save({productid:product._id}, function() {                
+            Add.save({productid:product._id}, function(response) { 
+                if(response.result) {
+                    product.safedelete = false;
+                }               
             });
         }
 }]);

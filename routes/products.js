@@ -117,11 +117,12 @@ router.post('/safedelete', function(req, res) {
         $set: {safedelete:true}
     }, 
     function(err, obj) { 
-        console.log(req.body.productid);  
-        console.log(obj);
-        if(err) throw err;
+        if(err) {
+            res.json({result: false});
+            throw err;
+        }
 
-        res.json(obj);
+        res.json({result: true});
     });  
 });
 
@@ -134,12 +135,13 @@ router.post('/undosafedelete', function(req, res) {
     {
         $set: {safedelete:false}
     }, 
-    function(err, obj) { 
-        console.log(req.body.productid);  
-        console.log(obj);
-        if(err) throw err;
+    function(err, obj) {         
+        if(err) {
+            res.json({result: false});
+            throw err;
+        }
 
-        res.json(obj);
+        res.json({result: true});
     });  
 });
 
