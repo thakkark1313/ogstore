@@ -1,8 +1,11 @@
 var express = require('express');
-var router = express.Router();
+var multer = require('multer');
+var dir = '../images/';
 var async = require('async');
 var monk = require('monk');
 var db = monk('localhost:27017/ogstore');
+var router = express.Router();
+var upload = multer({dest: dir}).single('photo');
 
 router.get('/', function(req, res) {    
     var collection = db.get('products');
@@ -195,7 +198,15 @@ router.post('/addproduct', function(req, res) {
                         res.json({result: false, message: 'Error occured while adding product.'});
                         throw err;               
                     }
-
+                    /*upload(req, res, function (err) {
+                        if (err) {                    
+                          console.log(err);
+                          return res.status(422).send("an Error occured")
+                        }  
+                       
+                        path = req.file.path;
+                        return res.send("Upload Completed for "+ path); 
+                    });*/
                     res.json({result: true, message: 'Product Added Successfully'});
             });
         }

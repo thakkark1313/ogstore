@@ -49,7 +49,10 @@ app.controller('HeaderCtrl', ['$scope', '$resource', 'commonservice',
                 $scope.username = user.user.username;
                 $scope.loggedIn = true;                               
                 $scope.isadmin = user.user.isadmin;
-                angular.element(document.querySelectorAll('[selector="productList"]')).scope().isadmin = user.user.isadmin;
+                try {
+                    angular.element(document.querySelectorAll('[selector="productList"]')).scope().isadmin = user.user.isadmin;
+                }                
+                catch(e) {}
                 commonservice.setIsAdmin(user.user.isadmin);
                 commonservice.setIsLoggedIn(true); 
             }
@@ -214,6 +217,9 @@ app.controller('AddProductCtrl', ['$scope', '$resource', '$timeout', '$window', 
                 }
             });
         };
+        $scope.cancel = function () {
+            $window.location.href = '/#/';
+        }
     }]);
 
 app.service('commonservice',function()

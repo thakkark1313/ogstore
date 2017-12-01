@@ -22,43 +22,48 @@
    					{{failuremessage}}
 			</div>		  
 		</div>
-		<div class="w3_login">
-			<h3>Add A Product</h3>
-			<div class="w3_login_module">
-				<div class="module form-module">
-					<div class="form1">
-						<div class="form-group">
-							<label>Title: </label>
-							<input type="text" ng-model="product.title" placeholder="Title" required=" " class="form-control"/>
+		<div class="col-md-8 address_form_agile address_form_agile_left">
+			<h4>Add A Product</h4>
+			<form class="creditly-card-form agileinfo_form">
+				<section class="creditly-wrapper wthree, w3_agileits_wrapper">
+					<div class="information-wrapper">
+						<div class="first-row form-group">
+							<div class="controls">
+								<label class="control-label">Title: </label>			
+								<input ng-model="product.title" class="billing-address-name form-control" type="text" placeholder="Title">
+							</div>
+							<div class="w3_agileits_card_number_grids">
+								<div class="w3_agileits_card_number_grid_left">
+									<div class="controls">
+										<label class="control-label">Description:</label>						
+										<textarea ng-model="product.description" placeholder="Description" required=" " class="form-control form-control-txtarea"></textarea>
+									</div>
+								</div>
+								<div class="w3_agileits_card_number_grid_right">
+									<div class="controls">
+										<label class="control-label">Price: </label>							
+										<input type="text" ng-model="product.price" placeholder="Price" required=" " class="form-control"/>
+									</div>
+								</div>
+								<div class="clear"></div>
+							</div>
+							<div class="controls">
+								<label class="control-label">Quantity: </label>				
+								<input type="text" ng-model="product.quantity" placeholder="Quantity" required=" " class="form-control"/>
+							</div>
+							<div class="controls">
+								<label class="control-label">Category: </label>
+								<select class="form-control option-w3ls" ng-model="product.category" ng-options="categoryap.cname for categoryap in categoriesAP">						
+								</select>
+							</div>
 						</div>
-						<div class="form-group">
-							<label>Description: </label>
-							<textarea ng-model="product.description" placeholder="Description" required=" " class="form-control"></textarea> 
-						</div>
-						<div class="form-group">
-							<label>Price: </label>
-							<input type="text" ng-model="product.price" placeholder="Price" required=" " class="form-control"/>
-						</div>					
-						<div class="form-group">
-							<label>Quantity: </label>
-							<input type="text" ng-model="product.quantity" placeholder="Quantity" required=" " class="form-control"/>
-						</div>							
-						<div class="form-group">
-							<label>Category: </label>
-							<select ng-model="product.category" ng-options="categoryap.cname for categoryap in categoriesAP" required=" " class="form-control">								
-							</select>
-						</div>		
-						<div class="form-group">
-							<label>Image: </label>
-							<button>
-								<input type="file" ng-file-select="onFileSelect($files)" placeholder="Image">
-							</button>				
-						</div>	
-						<input type="submit" value="Add Product" ng-click="addProduct()"/>
+						<button class="submit check_out button_left_margin" ng-click="addProduct()">Add Product</button>
+						<button class="submit check_out" ng-click="cancel()">Cancel</button>						
 					</div>
-				</div>
-			</div>
-		</div>		
+				</section>
+			</form>			
+		</div>
+		<div class="clearfix"></div>		
 	</div>
 </div>
 <div class="clearfix"></div>
