@@ -31,8 +31,8 @@
 					  <label ng-show="signupform.password.$touched && signupform.password.$invalid" class="login_error_label">Password is required</label>
 					  <input ng-model="semail" type="email" name="email" placeholder="Email Address" required="">
 					  <label ng-show="signupform.email.$touched && signupform.email.$invalid" class="login_error_label">Email is required</label>
-					  <input ng-model="sphone" type="text" name="phone" placeholder="Phone Number" required="">
-					  <label ng-show="signupform.phone.$touched && signupform.phone.$invalid" class="login_error_label">Phone is required</label>
+					  <input ng-model="sphone" type="text" name="phone" placeholder="Phone Number" required="" maxlength="10" numbers-only="" minlength="10">
+					  <label ng-show="signupform.phone.$touched && signupform.phone.$invalid" class="login_error_label">Phone is required and should be 10 digits</label>
 					  <input type="submit" value="Register">
 					</form>
 				  </div>
