@@ -11,7 +11,20 @@ router.get('/', function(req, res, next) {
 
 router.get('/register', function(req, res) {
       res.render('register', { });
-  });
+});
+
+router.post('/userexists', function(req, res) {    
+    Account.findOne({username : req.body.username}, function(err, account) {      
+      if(err) {
+        res.json({result: false});
+        throw err;
+      }
+      if(account)
+        res.json({result: true});
+      else
+        res.json({result: false});
+    });    
+});
 
 router.post('/register', function(req, res) {
     Account.register(new Account({ username : req.body.username, email : req.body.email, phone : req.body.phone, isadmin : false }), req.body.password, function(err, account) {        

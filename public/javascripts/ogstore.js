@@ -79,7 +79,8 @@ app.controller('HeaderCtrl', ['$scope', '$resource', 'commonservice',
 app.controller('LoginCtrl', ['$scope', '$resource', '$location', '$http',
     function($scope, $resource, $location, $http) {
         $scope.isSignup = false; 
-        $scope.lblLoginSignup = 'Sign Up';       
+        $scope.userexistsmessage = false;
+        $scope.lblLoginSignup = 'Sign Up';        
         $scope.loginSignupToggle = function(element) {
             if(element.target.nodeName == "DIV") 
                 $(element.target).parent().children('i').toggleClass('fa-pencil');
@@ -97,6 +98,17 @@ app.controller('LoginCtrl', ['$scope', '$resource', '$location', '$http',
         if($location.path() == '/signup') {
             var elm = {target:{nodeName: 'DIV'}};
             $scope.loginSignupToggle(elm);
+        };
+        $scope.validateUserName = function(){            
+            var User = $resource('/api/authentication/userexists');
+            User.save({username:$('[name="username"]').val()}, function(response) {
+                if(response.result) {
+                    $scope.userexistsmessage = true;
+                }   
+                else {
+                    $scope.userexistsmessage = false;
+                }             
+            });
         };       
 }]);
 
