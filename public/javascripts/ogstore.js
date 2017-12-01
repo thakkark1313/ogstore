@@ -99,16 +99,27 @@ app.controller('LoginCtrl', ['$scope', '$resource', '$location', '$http',
             var elm = {target:{nodeName: 'DIV'}};
             $scope.loginSignupToggle(elm);
         };
-        $scope.validateUserName = function(){            
-            var User = $resource('/api/authentication/userexists');
-            User.save({username:$('[name="username"]').val()}, function(response) {
-                if(response.result) {
-                    $scope.userexistsmessage = true;
-                }   
-                else {
-                    $scope.userexistsmessage = false;
-                }             
-            });
+        $scope.validateUserName = function(){
+            $scope.userexistsmessage = false;
+            var reg = /^\w+$/;
+            if(!reg.test($('[name="username"]').val())) {
+                $scope.usernamemessagetxt = 'Username can only contain letters, numbers and underscores';
+                $scope.userexistsmessage = true;
+                signupform.username.focus();
+            }
+            else {
+                var User = $resource('/api/authentication/userexists');
+                User.save({username:$('[name="username"]').val()}, function(response) {
+                    if(response.result) {
+                        $scope.usernamemessagetxt = 'Username already exists';
+                        $scope.userexistsmessage = true;
+                        signupform.username.focus();
+                    }   
+                    else {
+                        $scope.userexistsmessage = false;
+                    }             
+                });
+            }                        
         };       
 }]);
 

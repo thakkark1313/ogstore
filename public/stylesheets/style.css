@@ -2797,10 +2797,10 @@ input.checkbox:checked:after {
   display: block;
   width: 100%;
   border: 1px solid #d9d9d9;
-  margin: 0 0 20px;
+  margin: 0 0 5px;
   padding: 10px 15px;
   box-sizing: border-box;
-  font-wieght: 400;
+  font-weight: 400;
   -webkit-transition: 0.3s ease;
   transition: 0.3s ease;
   font-size:14px;
@@ -4860,4 +4860,9 @@ padding: 3%;
 .button_left_margin {
     float: left;
     margin-right: 3%;
+}
+
+.login_error_label {
+    color: red;
+    font-size: 0.8em !important;
 }
