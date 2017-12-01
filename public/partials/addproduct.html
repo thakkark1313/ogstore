@@ -8,21 +8,19 @@
 </div>
 <div class="clearfix"></div>
 <div class="banner">
-	<div ng-include="'partials/bannerleft.html'"></div>
-	<div class="w3l_banner_nav_right">		
-		<div class="body1 container1" ng-if="showSuccess">
-		  <div class="circle-icon circle-icon--success animate">
-		    <i class="icon-ok"></i>
-		  </div>
-		  <h3>Success!</h3>
-		  <p>{{successmessage}}</p>
+	<div ng-include="'partials/bannerleft.html'"></div>	
+	<div class="w3l_banner_nav_right">			
+		<div ng-if="showSuccess">
+		  	<div class="isa_success">
+		     	<i class="fa fa-check"></i>
+		     	{{successmessage}}
+		  	</div>		  		 
 		</div>
-		<div class="body1 container1" ng-if="showFailure">
-		  <div class="circle-icon circle-icon--error animate">
-		    <i class="icon-thumbs-down"></i>
-		  </div>
-		  <h3>Oops!</h3>
-		  <p>{{failuremessage}}</p>
+		<div ng-if="showFailure">
+			<div class="isa_error">
+   				<i class="fa fa-times-circle"></i>
+   					{{failuremessage}}
+			</div>		  
 		</div>
 		<div class="w3_login">
 			<h3>Add A Product</h3>
@@ -49,7 +47,13 @@
 							<label>Category: </label>
 							<select ng-model="product.category" ng-options="categoryap.cname for categoryap in categoriesAP" required=" " class="form-control">								
 							</select>
-						</div>							
+						</div>		
+						<div class="form-group">
+							<label>Image: </label>
+							<button>
+								<input type="file" ng-file-select="onFileSelect($files)" placeholder="Image">
+							</button>				
+						</div>	
 						<input type="submit" value="Add Product" ng-click="addProduct()"/>
 					</div>
 				</div>

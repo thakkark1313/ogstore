@@ -4830,118 +4830,17 @@ input.checkbox:checked:after {
 	}
 }
 
-.body1 {
-  font-family: "proxima_novalight", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+.isa_success, .isa_error {
+margin: 2%;
+padding: 3%; 
 }
 
-.container1 {
-  margin: 50px auto;
-  text-align: center;
-  width: 500px;
+.isa_success {
+    color: #4F8A10;
+    background-color: #DFF2BF;
 }
 
-.reanimate {
-  border: 1px solid #297c46;
-  color: #297c46;
-  display: block;
-  font-size: 1.5em;
-  margin: 0 auto;
-  padding: .5em;
-  text-align: center;
-  text-decoration: none;
-  -webkit-transition: all 0.1s ease-in-out;
-  transition: all 0.1s ease-in-out;
-  width: 50%;
-  
-  &:hover {
-    background-color: #297c46;
-    color: #fff;
-  }
-}
-//--------------------------------
-
-@mixin animated($name, $duration, $delay:"") {
-  -webkit-animation: $name $duration #{$delay};
-  animation: $name $duration #{$delay};
-}
-
-@mixin transformation($s) {
-    -webkit-transform: scale($s, $s);
-    transform: scale($s, $s);
-}
-
-@mixin transitions($time) {
-    -webkit-transition: all $time ease-in-out;
-    transition: all $time ease-in-out;
-}
-
-.circle-icon {
-  background: #7e7e7e;
-  border-radius: 50%;
-  display: table;
-  margin: 0 auto;
-  height: 6em;
-  width: 6em;
-  
-  i[class*=" icon"],
-  i[class^="icon"] {
-    color: #fff;
-    display: table-cell;
-    font-size: 3em;
-    text-align: center;
-    vertical-align: middle;
-    width: 100%;
-  }
-  
-  &.animate {
-      @include animated(fall-in, .75s);
-  }
-}
-
-.circle-icon--success {
-  background: #297c46;
-}
-
-.circle-icon--error {
-  background: #c84d40;
-}
-
-@-webkit-keyframes fall-in {
-  0% {
-        @include transformation(3);
-        opacity: 0;
-  }
-  
-  50% {
-        @include transformation(1);
-        opacity: 1;
-  }
-  
-  60% {
-        @include transformation(1.1);
-  }
-  
-  100% {
-        @include transformation(1);
-  }
-}
-        
-@keyframes fall-in {
-  0% {
-        @include transformation(3);
-        opacity: 0;
-  }
-  
-  50% {
-        @include transformation(1);
-        opacity: 1;
-  }
-  
-  60% {
-        @include transformation(1.1);
-  }
-  
-  100% {
-        @include transformation(1);
-  }
+.isa_error {
+    color: #D8000C;
+    background-color: #FFD2D2;
 }
