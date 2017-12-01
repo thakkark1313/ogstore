@@ -24,7 +24,7 @@
 		</div>
 		<div class="col-md-8 address_form_agile address_form_agile_left">
 			<h4>Add A Product</h4>
-			<form class="creditly-card-form agileinfo_form">
+			<form class="creditly-card-form agileinfo_form" name="addproductform">
 				<section class="creditly-wrapper wthree, w3_agileits_wrapper">
 					<div class="information-wrapper">
 						<div class="first-row form-group">
@@ -56,6 +56,12 @@
 								<select class="form-control option-w3ls" ng-model="product.category" ng-options="categoryap.cname for categoryap in categoriesAP">						
 								</select>
 							</div>
+							<div class="controls">
+								<input type="file" ngf-select ng-model="fileforupload" name="file" ngf-pattern="'image/*'" accept="image/*" ngf-max-size="20MB" required />
+	            		  		Image thumbnail: <img style="width:100px;" ngf-thumbnail="fileforupload || '/thumb.jpg'"/>
+	            		  		<i ng-show="addproductform.file.$error.required">*required</i><br>
+	            		  		<i ng-show="addproductform.file.$error.maxSize">File too large {{up.file.size / 1000000|number:1}}MB: max 20M</i>			
+            		  		</div>		  
 						</div>
 						<button class="submit check_out button_left_margin" ng-click="addProduct()">Add Product</button>
 						<button class="submit check_out" ng-click="cancel()">Cancel</button>						

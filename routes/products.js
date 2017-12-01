@@ -1,11 +1,20 @@
 var express = require('express');
 var multer = require('multer');
-var dir = '../images/';
 var async = require('async');
 var monk = require('monk');
 var db = monk('localhost:27017/ogstore');
 var router = express.Router();
-var upload = multer({dest: dir}).single('photo');
+var storage = multer.diskStorage({ 
+    destination: function (req, file, cb) {
+        cb(null, '../ogstore/public/images/')
+    },
+    filename: function (req, file, cb) {        
+        cb(null, file.originalname)
+    }
+});
+var upload = multer({
+    storage: storage
+}).single('file');
 
 router.get('/', function(req, res) {    
     var collection = db.get('products');
@@ -172,8 +181,19 @@ router.post('/editproduct', function(req, res) {
     });
 });
 
+router.post('/upload', function(req, res) {          
+        upload(req,res,function(err){            
+            if(err){                
+                 res.json({error_code:1,err_desc:err});
+                 return;
+            }
+
+            res.json({error_code:0,err_desc:null});
+    })
+});
+
 router.post('/addproduct', function(req, res) {
-    var collection = db.get('products');
+    var collection = db.get('products');    
     collection.findOne({title: req.body.title}, function(err, obj) {
         if(err) {
             res.json({result: false, message: 'Error occured while adding product.'});
@@ -198,15 +218,7 @@ router.post('/addproduct', function(req, res) {
                         res.json({result: false, message: 'Error occured while adding product.'});
                         throw err;               
                     }
-                    /*upload(req, res, function (err) {
-                        if (err) {                    
-                          console.log(err);
-                          return res.status(422).send("an Error occured")
-                        }  
-                       
-                        path = req.file.path;
-                        return res.send("Upload Completed for "+ path); 
-                    });*/
+
                     res.json({result: true, message: 'Product Added Successfully'});
             });
         }

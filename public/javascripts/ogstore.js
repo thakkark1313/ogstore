@@ -1,4 +1,4 @@
-var app = angular.module('ogstore', ['ngResource', 'ngRoute']);
+var app = angular.module('ogstore', ['ngResource', 'ngRoute', 'ngFileUpload']);
 
 app.config(['$routeProvider', function($routeProvider){
     $routeProvider
@@ -213,19 +213,24 @@ app.controller('CartCtrl', ['$scope', '$resource', '$routeParams', 'commonservic
         });       
 }]);
 
-app.controller('AddProductCtrl', ['$scope', '$resource', '$timeout', '$window', 'commonservice', 
-    function($scope, $resource, $timeout, $window, commonservice) {      
+app.controller('AddProductCtrl', ['$scope', '$resource', '$timeout', '$window', 'Upload', 'commonservice', 
+    function($scope, $resource, $timeout, $window, Upload, commonservice) {      
         $scope.showSuccess = false;
         $scope.showFailure = false;  
         var Categories = $resource('/api/products/categories');
         Categories.query(function(categories){            
             $scope.categoriesAP = categories;
         });
-        $scope.addProduct = function () {
-            var AddProduct = $resource('/api/products/addproduct');
+        $scope.addProduct = function () {            
+            $scope.product.picture = $scope.fileforupload.name.split('.')[0];
+            var AddProduct = $resource('/api/products/addproduct');            
             AddProduct.save($scope.product, function(response) {
                 $('#toTopHover').click();
                 if(response.result) {
+                    try {
+                        Upload.upload({url:'/api/products/upload', data:{file:$scope.fileforupload}}).then(function() {}, function() {});
+                    }                    
+                    catch(e) {}
                     $scope.showFailure = false;
                     $scope.showSuccess = true;                           
                     $scope.successmessage = response.message;
