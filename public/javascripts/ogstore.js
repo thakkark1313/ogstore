@@ -1,7 +1,5 @@
 var app = angular.module('ogstore', ['ngResource', 'ngRoute']);
 
-
-
 app.config(['$routeProvider', function($routeProvider){
     $routeProvider
         .when('/', {
@@ -29,8 +27,8 @@ app.config(['$routeProvider', function($routeProvider){
             controller: 'LoginCtrl'
         })
         .when('/addproduct', {
-            templateUrl: 'partials/addproduct.html'
-            //controller:  'AddProductCtrl'
+            templateUrl: 'partials/addproduct.html',
+            controller:  'AddProductCtrl'
         })
         .otherwise({
             redirectTo: '/'
@@ -188,6 +186,35 @@ app.controller('CartCtrl', ['$scope', '$resource', '$routeParams', 'commonservic
             $scope.cartitems = cartitems;          
         });       
 }]);
+
+app.controller('AddProductCtrl', ['$scope', '$resource', '$timeout', '$window', 'commonservice', 
+    function($scope, $resource, $timeout, $window, commonservice) {      
+        $scope.showSuccess = false;
+        $scope.showFailure = false;  
+        var Categories = $resource('/api/products/categories');
+        Categories.query(function(categories){            
+            $scope.categoriesAP = categories;
+        });
+        $scope.addProduct = function () {
+            var AddProduct = $resource('/api/products/addproduct');
+            AddProduct.save($scope.product, function(response) {
+                $('#toTopHover').click();
+                if(response.result) {
+                    $scope.showFailure = false;
+                    $scope.showSuccess = true;                           
+                    $scope.successmessage = response.message;
+                    $timeout(function() {
+                        $window.location.href='/#/';
+                    }, 3000);             
+                }
+                else {
+                    $scope.showSuccess = false;
+                    $scope.showFailure = true;                    
+                    $scope.failuremessage = response.message;
+                }
+            });
+        };
+    }]);
 
 app.service('commonservice',function()
 {

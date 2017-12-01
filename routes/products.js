@@ -179,15 +179,16 @@ router.post('/addproduct', function(req, res) {
         if(obj) {
             res.json({result: false, message: 'Product already exists'});
         }
-        else {
+        else {            
             collection.insert(
                 {
                     title: req.body.title,
-                    description: req.body.description,
-                    quantity: req.body.description,
+                    category: req.body.category.cid,
+                    price: req.body.price,
+                    quantity: parseInt(req.body.quantity),                                
                     safedelete: false,
-                    picture: req.body.picture,
-                    category: req.body.category
+                    picture: req.body.picture,            
+                    description: req.body.description        
                 }, 
                 function(err, product) {
                     if(err) {
@@ -195,7 +196,7 @@ router.post('/addproduct', function(req, res) {
                         throw err;               
                     }
 
-                    res.json({resut: true, message: 'Product Added Successfully'});
+                    res.json({result: true, message: 'Product Added Successfully'});
             });
         }
     });
