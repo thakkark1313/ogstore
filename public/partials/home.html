@@ -45,13 +45,28 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 <!--<div ng-include="'partials/header.html'"></div>-->
 <!-- //header -->
 <!-- banner -->
+		<div ng-if="showSuccess">
+		  	<div class="isa_success">
+		     	<i class="fa fa-check"></i>
+		     	{{successmessage}}
+		  	</div>		  		 
+		</div>
+		<div ng-if="showFailure">
+			<div class="isa_error">
+   				<i class="fa fa-times-circle"></i>
+   					{{failuremessage}}
+			</div>		  
+		</div>
 	<div class="banner">
 		<!--banner left-->
 		<div ng-include="'partials/bannerleft.html'"></div>
 		<!-- // banner left -->
 
 		<div class="w3l_banner_nav_right" selector="productList">		
-		<div ng-repeat="product in products | filter:searchField" ng-if="isadmin || !product.safedelete" class="col-md-3 top_brand_left">
+		
+
+		<div>	    	    
+			<div ng-repeat="product in data | startFrom:currentPage*pageSize | limitTo:pageSize | filter:searchField" ng-if="isadmin || !product.safedelete" class="col-md-3 top_brand_left">
 					<div class="hover14 column">
 						<div class="agile_top_brand_left_grid">							
 							<div class="agile_top_brand_left_grid1">
@@ -79,7 +94,15 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 							</div>
 						</div>
 					</div>
-				</div>
+			</div>
+			<button ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">
+		        Previous
+		    </button>
+		    {{currentPage+1}}/{{numberOfPages()}}
+		    <button ng-disabled="currentPage >= getData().length/pageSize - 1" ng-click="currentPage=currentPage+1">
+		        Next
+		    </button>
+		</div>
 			<!--<section class="slider">
 				<div class="flexslider">
 					<ul class="slides">

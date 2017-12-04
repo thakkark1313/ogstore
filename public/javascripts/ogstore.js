@@ -79,7 +79,6 @@ app.controller('HeaderCtrl', ['$scope', '$resource', 'commonservice',
             );
         };    
 }]);
-
 app.controller('LoginCtrl', ['$scope', '$resource', '$location', '$http',
     function($scope, $resource, $location, $http) {
         $scope.isSignup = false; 
@@ -136,8 +135,12 @@ app.controller('LeftBannerCtrl', ['$scope', '$resource',
 }]);
 
 
-app.controller('HomeCtrl', ['$scope', '$resource', 'commonservice', 
-    function($scope, $resource, commonservice){        
+app.controller('HomeCtrl', ['$scope', '$resource', 'commonservice','$timeout','$filter', 
+    function($scope, $resource, commonservice, $timeout,$filter){ 
+        $scope.currentPage = 0;        
+        $scope.pageSize = 8;
+        $scope.data = [];        
+
         var Products = $resource('/api/products');                
         Products.query(function(products){
             $scope.products = products;  
@@ -145,8 +148,18 @@ app.controller('HomeCtrl', ['$scope', '$resource', 'commonservice',
                 angular.forEach($scope.products, function(value, key) {
                     value.myquantity = 1;
                 });
-        }  
+                $scope.data = $scope.products;
+            }  
         }); 
+
+        $scope.getData = function () {
+          return $filter('filter')($scope.data)
+        }
+
+        $scope.numberOfPages=function(){
+            return Math.ceil($scope.getData().length/$scope.pageSize);                
+        }                
+
         $scope.isadmin = commonservice.getIsAdmin();      
         $scope.searchField = {
             title: ''
@@ -154,21 +167,70 @@ app.controller('HomeCtrl', ['$scope', '$resource', 'commonservice',
         $scope.addtocart = function (product)
         {          
             Products = $resource('/api/products/addtocart');
-            Products.save({pid:product._id, qty:product.myquantity}, function() {
+            Products.save({pid:product._id, qty:product.myquantity}, function(response) 
+            {                
+                $('#toTopHover').click();
+                console.log(response);
+                if(response.result) {                                        
+                    $scope.showFailure = false;
+                    $scope.showSuccess = true;                           
+                    $scope.successmessage = response.message;
+                    $timeout(function() {
+                        $scope.showSuccess = false;    
+                    }, 2000);             
 
+                }                
+                else {                    
+                    $scope.showSuccess = false;
+                    $scope.showFailure = true;                                        
+                    $scope.failuremessage = response.message;
+                    $timeout(function() {
+                        $scope.showFailure = false;    
+                    }, 2000);             
+                }            
             });                        
         };
 }]);
 
-app.controller('CategoryCtrl', ['$scope', '$resource', '$routeParams', 'commonservice',
-    function($scope, $resource, $routeParams, commonservice){                
+app.controller('CategoryCtrl', ['$scope', '$resource', '$routeParams', 'commonservice','$filter',
+    function($scope, $resource, $routeParams, commonservice,$filter){       
+
+        $scope.currentPage = 0;        
+        $scope.pageSize = 8;
+        $scope.data = [];        
+
+
         $scope.categories = commonservice.getCategories();
         var Products = $resource('/api/products/categories/:id',{id:'@_id'});        
         Products.query({ id: $routeParams.id }, function(products){
-            $scope.products = products;            
+            $scope.products = products;    
+            if($scope.products != null) {
+                angular.forEach($scope.products, function(value, key) {
+                    value.myquantity = 1;
+                });
+                $scope.data = $scope.products;
+            }  
         });
+        
+        $scope.searchField = {
+            title: ''
+        }
+
+        $scope.getData = function () {
+          return $filter('filter')($scope.data)
+        }
+
+        $scope.numberOfPages=function(){
+            return Math.ceil($scope.getData().length/$scope.pageSize);                
+        }
 }]);
 
+app.filter('startFrom', function() {
+    return function(input, start) {
+        start = +start; //parse to int
+        return input.slice(start);
+    }
+});
 
 app.controller('ProductCtrl', ['$scope', '$resource', '$location', '$routeParams', 'commonservice', 
     function($scope, $resource, $location, $routeParams, commonservice){
@@ -208,14 +270,15 @@ app.controller('ProductCtrl', ['$scope', '$resource', '$location', '$routeParams
         };
 }]);
 
-app.controller('CartCtrl', ['$scope', '$resource', '$location', '$routeParams', 'commonservice', 
-    function($scope, $resource, $location, $routeParams, commonservice){
+app.controller('CartCtrl', ['$scope', '$resource', '$location', '$routeParams', 'commonservice','$route', 
+    function($scope, $resource, $location, $routeParams, commonservice,$route){
         $scope.categories = commonservice.getCategories();
         var Cart = $resource('/api/products/cart');
-
+        $scope.empty = true;
+        $scope.notempty = false;
         var total = 0;            
-        Cart.query(function(cartitems){                        
-            $scope.cartitems = cartitems;
+        Cart.query(function(cartitems){                                    
+            $scope.cartitems = cartitems;            
             if (cartitems.length == 0)          
             {
                 console.log("empty");
@@ -229,24 +292,26 @@ app.controller('CartCtrl', ['$scope', '$resource', '$location', '$routeParams', 
                 $scope.notempty = true;
             }
             // console.dir(cartitems);
-        });             
-        
+        });                     
         $scope.changeqty = function(){
             // console.log("here");                
         };
 
         $scope.removeItem = function(cartid){
             Cart.delete({ id:  cartid}, function(cartObj){                    
-                $location.path('#/cart');
+                $route.reload();
             });
         };
 
         $scope.getTotal = function(){
             var total = 0;            
-            for (var i =0 ;i<$scope.cartitems.length;i++)
+            if ($scope.cartitems != undefined && $scope.cartitems != null && $scope.cartitems.length != 0)
             {
-                total += parseFloat($scope.cartitems[i].acprice);
-            }            
+                for (var i =0 ;i<$scope.cartitems.length;i++)
+                {
+                    total += parseFloat($scope.cartitems[i].acprice);
+                }       
+            }                        
             return total.toFixed(2);
         };
 

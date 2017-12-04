@@ -108,18 +108,35 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 			</ul>
 		</div>
 	</div>
+	<div ng-if="showSuccess">
+		  	<div class="isa_success">
+		     	<i class="fa fa-check"></i>
+		     	{{successmessage}}
+		  	</div>		  		 
+		</div>
+		<div ng-if="showFailure">
+			<div class="isa_error">
+   				<i class="fa fa-times-circle"></i>
+   					{{failuremessage}}
+			</div>		  
+		</div>
 <!-- //products-breadcrumb -->
 <!-- banner -->
 	<div class="banner">		
 			<div ng-include="'partials/bannerleft.html'"></div>					
 		<div class="w3l_banner_nav_right">
 <!-- about -->
-		<div class="privacy about">
-			<h3>Chec<span>kout</span></h3>		  
-			<div ng-if="empty" class="checkout-right">
-				<h4>Your shopping cart is empty</h4>
-			</div>			
-	        <div ng-if="notempty" class="checkout-right">
+
+		<div ng-if="empty" class="privacy about">
+			<h3>Car<span>t</span></h3>		  
+			<div class="checkout-right">
+				<h4>Your shopping cart is Empty</h4>
+			</div>
+		</div>
+		<div ng-if="notempty" class="privacy about">
+			<h3>Car<span>t</span></h3>		  
+						
+	        <div class="checkout-right">
 					<h4>Your shopping cart contains</h4>
 				<table class="timetable_sub">
 					<thead>

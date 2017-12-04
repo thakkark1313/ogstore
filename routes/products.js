@@ -119,7 +119,11 @@ router.post('/addtocart', function(req, res){
     var qty = parseInt(req.body.qty);
     var t_userid = 1;
     collection.findOne({productid:tempid},function(err,product){
-        if (err) throw err;
+        if(err) 
+        {
+            res.json({result: false, message: 'Error occured while adding product to cart.'});
+            throw err;               
+        }
         if (product)
         {
             collection.update(
@@ -131,10 +135,15 @@ router.post('/addtocart', function(req, res){
                 userid:t_userid,                
                 productid : tempid,
                 quantity: product["quantity"] + qty
-            }, function(err, obj){
-                if (err) throw err;
+            }, function(err, obj)
+            {
+                if (err)
+                {
+                    res.json({result: false, message: 'Error occured while adding product to cart.'});
+                    throw err;                        
+                } 
 
-                res.json(obj);
+                res.json({result: true, message: 'Product Added to Cart Successfully'});
             });
         }
         else
@@ -144,9 +153,14 @@ router.post('/addtocart', function(req, res){
                 productid: tempid,
                 quantity:qty
             }, function(err, cartObj){
-                if (err) throw err;
 
-                res.json(cartObj);
+                if (err) 
+                {
+                    res.json({result: false, message: 'Error occured while adding product to cart.'});
+                    throw err;
+                }
+
+                res.json({result: true, message: 'Product Added to Cart Successfully'});
             });        
         }
     });    
@@ -241,7 +255,7 @@ router.post('/addproduct', function(req, res) {
             collection.insert(
                 {
                     title: req.body.title,
-                    category: req.body.category.cid,
+                    category: req.body.category._id,
                     price: req.body.price,
                     quantity: parseInt(req.body.quantity),                                
                     safedelete: false,
