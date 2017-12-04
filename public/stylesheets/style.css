@@ -4867,3 +4867,8 @@ padding: 3%;
     color: red;
     font-size: 0.8em !important;
 }
+
+.newcateg {
+    text-decoration: none !important;
+    color: blue;
+}
