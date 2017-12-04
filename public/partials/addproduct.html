@@ -53,8 +53,10 @@
 							</div>
 							<div class="controls">
 								<label class="control-label">Category: </label>
-								<select class="form-control option-w3ls" ng-model="product.category" ng-options="categoryap.cname for categoryap in categoriesAP">						
+								<select ng-if="!newCat" class="form-control option-w3ls" ng-model="product.category" ng-options="categoryap.cname for categoryap in categoriesAP">						
 								</select>
+								<input type="text" ng-if="newCat" ng-model="product.newcategory" placeholder="New Category" required=" " class="form-control"/>
+								<a href="" ng-click="displayNewCat()" class="newcateg">{{newCaltegory}}</a>
 							</div>
 							<div class="controls">
 								<input type="file" ngf-select ng-model="fileforupload" name="file" ngf-pattern="'image/*'" accept="image/*" ngf-max-size="20MB" required />

@@ -149,7 +149,7 @@ app.controller('HomeCtrl', ['$scope', '$resource', 'commonservice','$timeout','$
                     value.myquantity = 1;
                 });
                 $scope.data = $scope.products;
-            }  
+            };  
         }); 
 
         $scope.getData = function () {
@@ -198,9 +198,7 @@ app.controller('CategoryCtrl', ['$scope', '$resource', '$routeParams', 'commonse
         $scope.currentPage = 0;        
         $scope.pageSize = 8;
         $scope.data = [];        
-
-
-        $scope.categories = commonservice.getCategories();
+        
         var Products = $resource('/api/products/categories/:id',{id:'@_id'});        
         Products.query({ id: $routeParams.id }, function(products){
             $scope.products = products;    
@@ -233,8 +231,7 @@ app.filter('startFrom', function() {
 });
 
 app.controller('ProductCtrl', ['$scope', '$resource', '$location', '$routeParams', 'commonservice', 
-    function($scope, $resource, $location, $routeParams, commonservice){
-        //$scope.categories = commonservice.getCategories();
+    function($scope, $resource, $location, $routeParams, commonservice){        
         $scope.isadmin = commonservice.getIsAdmin();
         $scope.editproduct = false;
         var Products = $resource('/api/products/:id',{id:'@_id'});        
@@ -272,7 +269,6 @@ app.controller('ProductCtrl', ['$scope', '$resource', '$location', '$routeParams
 
 app.controller('CartCtrl', ['$scope', '$resource', '$location', '$routeParams', 'commonservice','$route', 
     function($scope, $resource, $location, $routeParams, commonservice,$route){
-        $scope.categories = commonservice.getCategories();
         var Cart = $resource('/api/products/cart');
         $scope.empty = true;
         $scope.notempty = false;
@@ -290,11 +286,11 @@ app.controller('CartCtrl', ['$scope', '$resource', '$location', '$routeParams', 
                 console.log("notempty");
                 $scope.empty = false;
                 $scope.notempty = true;
-            }
-            // console.dir(cartitems);
-        });                     
-        $scope.changeqty = function(){
-            // console.log("here");                
+            }            
+        });             
+        
+        $scope.changeqty = function(){            
+
         };
 
         $scope.removeItem = function(cartid){
@@ -352,6 +348,8 @@ app.controller('AddProductCtrl', ['$scope', '$resource', '$timeout', '$window', 
     function($scope, $resource, $timeout, $window, Upload, commonservice) {      
         $scope.showSuccess = false;
         $scope.showFailure = false;  
+        $scope.newCaltegory = 'New Category';
+        $scope.newCat = false;
         var Categories = $resource('/api/products/categories');
         Categories.query(function(categories){            
             $scope.categoriesAP = categories;
@@ -382,19 +380,21 @@ app.controller('AddProductCtrl', ['$scope', '$resource', '$timeout', '$window', 
         };
         $scope.cancel = function () {
             $window.location.href = '/#/';
+        };
+        $scope.displayNewCat = function () {
+            if($scope.newCat) {
+                $scope.newCaltegory = 'New Category';
+                $scope.newCat = false;
+            }
+            else {
+                $scope.newCaltegory = 'Existing Category';
+                $scope.newCat = true;    
+            }
         }
     }]);
 
 app.service('commonservice',function()
 {
-    var _categories;
-    function getCategories () {
-        return this._categories;
-    }
-    function setCategories  (categories) {
-        this._categories = categories;
-    }
-
     var _isadmin = false;
     function getIsAdmin () {
         return this._isadmin;
@@ -412,8 +412,6 @@ app.service('commonservice',function()
     }
 
     return {
-        getCategories : getCategories,
-        setCategories : setCategories,
         getIsAdmin : getIsAdmin,
         setIsAdmin : setIsAdmin,
         getIsLoggedIn : getIsLoggedIn,

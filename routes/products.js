@@ -241,37 +241,52 @@ router.post('/upload', function(req, res) {
     })
 });
 
-router.post('/addproduct', function(req, res) {
-    var collection = db.get('products');    
-    collection.findOne({title: req.body.title}, function(err, obj) {
-        if(err) {
-            res.json({result: false, message: 'Error occured while adding product.'});
-            throw err;
-        }
-        if(obj) {
-            res.json({result: false, message: 'Product already exists'});
-        }
-        else {            
-            collection.insert(
-                {
-                    title: req.body.title,
-                    category: req.body.category._id,
-                    price: req.body.price,
-                    quantity: parseInt(req.body.quantity),                                
-                    safedelete: false,
-                    picture: req.body.picture,            
-                    description: req.body.description        
-                }, 
-                function(err, product) {
-                    if(err) {
-                        res.json({result: false, message: 'Error occured while adding product.'});
-                        throw err;               
-                    }
+router.post('/addproduct', function(req, res) {    
+    var collection = db.get('products');   
+    var newCategoryAdded = false, addProduct = true, newCategoryId='';    
+    if(req.body.newcategory != undefined && req.body.newcategory != null && req.body.newcategory != '') {
+        var catCollection = db.get('categories');        
+        newCategoryAdded = true;
+        catCollection.insert({cname: req.body.newcategory}, function(err, catObj) {
+            if(err) {
+                addproduct = false
+                res.json({result: false, message: 'Error occured while adding new category.'})
+                throw err;
+            }            
+            newCategoryId = catObj._id;
+        });
+    } 
+    if(addProduct) {
+        collection.findOne({title: req.body.title}, function(err, obj) {
+            if(err) {
+                res.json({result: false, message: 'Error occured while adding product.'});
+                throw err;
+            }
+            if(obj) {
+                res.json({result: false, message: 'Product already exists'});
+            }
+            else {            
+                collection.insert(
+                    {
+                        title: req.body.title,
+                        category: !newCategoryAdded ? req.body.category._id : newCategoryId.toString(),
+                        price: req.body.price,
+                        quantity: parseInt(req.body.quantity),                                
+                        safedelete: false,
+                        picture: req.body.picture,            
+                        description: req.body.description        
+                    }, 
+                    function(err, product) {
+                        if(err) {
+                            res.json({result: false, message: 'Error occured while adding product.'});
+                            throw err;               
+                        }
 
-                    res.json({result: true, message: 'Product Added Successfully'});
-            });
-        }
-    });
+                        res.json({result: true, message: 'Product Added Successfully'});
+                });
+            }
+        });
+    }    
 });
 
 router.get('/:id',function(req,res){
