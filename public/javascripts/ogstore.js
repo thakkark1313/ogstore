@@ -126,8 +126,9 @@ app.controller('LoginCtrl', ['$scope', '$resource', '$location', '$http',
         };       
 }]);
 
-app.controller('LeftBannerCtrl', ['$scope', '$resource', 
-    function($scope, $resource) {
+app.controller('LeftBannerCtrl', ['$scope', '$resource', '$routeParams', 
+    function($scope, $resource, $routeParams) {
+        $scope.classid = $routeParams.id;
         var Categories = $resource('/api/products/categories');
         Categories.query(function(categories){            
             $scope.categories = categories;
