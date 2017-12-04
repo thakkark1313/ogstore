@@ -30,6 +30,10 @@ app.config(['$routeProvider', function($routeProvider){
             templateUrl: 'partials/addproduct.html',
             controller:  'AddProductCtrl'
         })
+        .when('/checkout',{
+            templateUrl: 'partials/payment.html',
+            controller : 'CheckoutCtrl'
+        })
         .otherwise({
             redirectTo: '/'
         });
@@ -204,14 +208,80 @@ app.controller('ProductCtrl', ['$scope', '$resource', '$location', '$routeParams
         };
 }]);
 
-app.controller('CartCtrl', ['$scope', '$resource', '$routeParams', 'commonservice', 
-    function($scope, $resource, $routeParams, commonservice){
+app.controller('CartCtrl', ['$scope', '$resource', '$location', '$routeParams', 'commonservice', 
+    function($scope, $resource, $location, $routeParams, commonservice){
         $scope.categories = commonservice.getCategories();
-        var Cart = $resource('/api/products/cart');        
-        Cart.query(function(cartitems){
-            $scope.cartitems = cartitems;          
-        });       
-}]);
+        var Cart = $resource('/api/products/cart');
+
+        var total = 0;            
+        Cart.query(function(cartitems){                        
+            $scope.cartitems = cartitems;
+            if (cartitems.length == 0)          
+            {
+                console.log("empty");
+                $scope.empty = true;
+                $scope.notempty = false;
+            }
+            else                
+            {
+                console.log("notempty");
+                $scope.empty = false;
+                $scope.notempty = true;
+            }
+            // console.dir(cartitems);
+        });             
+        
+        $scope.changeqty = function(){
+            // console.log("here");                
+        };
+
+        $scope.removeItem = function(cartid){
+            Cart.delete({ id:  cartid}, function(cartObj){                    
+                $location.path('#/cart');
+            });
+        };
+
+        $scope.getTotal = function(){
+            var total = 0;            
+            for (var i =0 ;i<$scope.cartitems.length;i++)
+            {
+                total += parseFloat($scope.cartitems[i].acprice);
+            }            
+            return total.toFixed(2);
+        };
+
+
+        $scope.checkout = function()
+        {                    
+            // console.dir($scope.cartitems);
+            // remove items from cart
+            var userdid = 1;            
+            var orders = $resource('/api/products/orders');                                                            
+            $scope.cartitems.forEach(function(cartObj)
+            {
+                orders.save({userid:cartObj.userid, productid:cartObj.productid, quantity:cartObj.quantity,price:cartObj.acprice}, function() 
+                {                    
+                });                
+                var prod = $resource('/api/products/'.concat(cartObj.productid));
+                prod.get({}, function(product)
+                {
+                    // console.dir(product);  
+                    var cproduct = $resource('/api/products/editproduct');      
+                    cproduct.save({_id:cartObj.productid, quantity:product.quantity - parseInt(cartObj.quantity), title:product.title, description: product.description, price:product.price},function()
+                    {
+                        Cart.delete({ id: cartObj._id }, function(cartsobj){
+                            
+                        });
+                    });
+                //var cproduct = $resource('/api/products/editproduct');                
+                // console.log("here");
+                // console.dir(cproduct);
+                //cproduct.save({_id:cartObj.productid, quantity:parseInt(cartObj.quantity)},function(){
+                });                
+            });
+        }
+    
+    }]);    
 
 app.controller('AddProductCtrl', ['$scope', '$resource', '$timeout', '$window', 'Upload', 'commonservice', 
     function($scope, $resource, $timeout, $window, Upload, commonservice) {      
@@ -284,7 +354,9 @@ app.service('commonservice',function()
         getIsLoggedIn : getIsLoggedIn,
         setIsLoggedIn : setIsLoggedIn
     }
-    });
+});
+
+
 
 app.directive('numbersOnly', function () {
     return {

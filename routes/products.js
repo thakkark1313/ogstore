@@ -34,26 +34,39 @@ router.get('/categories', function(req, res) {
 
 router.get('/categories/:id', function(req, res) { 	
     var collection = db.get('products');    
-    var tempid = parseInt(req.params.id);
+    var tempid = req.params.id;
     collection.find({category:tempid}, function(err, products){
         if (err) throw err;               
       	res.json(products);
     });
 });
 
+
+
+
+router.delete('/cart', function(req, res) {  
+    var collection = db.get('cart');          
+    collection.remove({_id:req.query.id}, function(err, cartitems)
+    {           
+        if (err) throw err;    
+        res.json(cartitems);
+    }); 
+});
+
+
 router.get('/cart', function(req, res) {  
     var collection = db.get('cart');  
     var collection1 = db.get('products');      
     var tempid = 1;// parseInt(req.params.id);    
     var tmp = 1;
-    var ret = [];   
-
-    
+    var ret = [];  
+    var total = 0;
     collection.find({userid:tempid}, function(err, cartitems)
     {           
             
         if (err) throw err;              
         var i = 0;
+
         async.forEach(cartitems, function(cartObj,callback) {             
             collection1.findOne({_id:cartObj.productid},function(err,product){                
                 i++;
@@ -64,12 +77,17 @@ router.get('/cart', function(req, res) {
                     {                    
                         cartObj[x] = product[x];
                     }
-                }                    
-                // console.dir(cartObj);
+                }          
+                cartObj["acprice"] = cartObj["price"] * cartObj["quantity"];  
+                cartObj["acprice"] = cartObj["acprice"].toFixed(2);
+                total += cartObj["acprice"];                
                 ret.push(cartObj);                                        
                 if (i == cartitems.length)
                 {
+                    ret["total"] = total;
+                    // console.log(total);
                     res.json(ret);
+                    // console.dir(json(ret));
                 }
             });            
             callback();
@@ -78,6 +96,21 @@ router.get('/cart', function(req, res) {
             // res.json(ret);
         });
     }); 
+});
+
+
+router.post('/orders', function(req, res){    
+    var collection = db.get('orders');    
+    collection.insert({
+        userid: 1,
+        productid: req.body.productid,
+        quantity:req.body.quantity,
+        price: req.body.price
+    }, function(err, orderObj){
+        if (err) throw err;
+        // console.log("here");
+        res.json(orderObj);
+    });
 });
 
 router.post('/addtocart', function(req, res){
@@ -115,7 +148,7 @@ router.post('/addtocart', function(req, res){
 
                 res.json(cartObj);
             });        
-            }
+        }
     });    
 });
 
@@ -157,8 +190,9 @@ router.post('/undosafedelete', function(req, res) {
     });  
 });
 
-router.post('/editproduct', function(req, res) {
-    var collection = db.get('products');    
+router.post('/editproduct', function(req, res) {    
+    var collection = db.get('products');        
+    // console.dir(req.body);
     collection.update(
         {
             _id: req.body._id
@@ -180,6 +214,7 @@ router.post('/editproduct', function(req, res) {
             res.json({result: true});
     });
 });
+
 
 router.post('/upload', function(req, res) {          
         upload(req,res,function(err){            
@@ -232,5 +267,17 @@ router.get('/:id',function(req,res){
 		res.json(product);
 	});
 });
+
+
+/*
+router.post('/checkout', function(req, res) {
+    var prodCol = db.get('products');
+    var orderCol = db.get('orders');        
+    // var user = db.get('users');
+    // var addCol = db.get('address');
+        
+});
+
+*/
 
 module.exports = router;
