@@ -869,6 +869,7 @@ button.submit.check_out{
 .column div.agile_top_brand_left_grid {
 	position: relative;
 	margin:0;
+    margin-bottom: 15%;
 }
 .agile_top_brand_left_grid figure {
 	margin: 0;
