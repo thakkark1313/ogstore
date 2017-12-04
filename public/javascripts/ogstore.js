@@ -198,9 +198,7 @@ app.controller('CategoryCtrl', ['$scope', '$resource', '$routeParams', 'commonse
         $scope.currentPage = 0;        
         $scope.pageSize = 8;
         $scope.data = [];        
-
-
-        $scope.categories = commonservice.getCategories();
+        
         var Products = $resource('/api/products/categories/:id',{id:'@_id'});        
         Products.query({ id: $routeParams.id }, function(products){
             $scope.products = products;    
@@ -233,8 +231,7 @@ app.filter('startFrom', function() {
 });
 
 app.controller('ProductCtrl', ['$scope', '$resource', '$location', '$routeParams', 'commonservice', 
-    function($scope, $resource, $location, $routeParams, commonservice){
-        //$scope.categories = commonservice.getCategories();
+    function($scope, $resource, $location, $routeParams, commonservice){        
         $scope.isadmin = commonservice.getIsAdmin();
         $scope.editproduct = false;
         var Products = $resource('/api/products/:id',{id:'@_id'});        
