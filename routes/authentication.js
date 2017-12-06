@@ -38,7 +38,7 @@ router.post('/register', function(req, res) {
     });
 });
 
-router.get('/login', function(req, res) {
+router.get('/login', function(req, res) {      
       res.render('login', { user : req.user });
 });
 
@@ -81,6 +81,7 @@ router.post('/login', function(req, res, next) {
 });
 
 router.get('/logout', function(req, res) {
+      global.userid = '';
       req.logout();
       res.redirect('/');
 });
