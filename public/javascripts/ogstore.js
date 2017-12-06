@@ -181,15 +181,32 @@ app.controller('HomeCtrl', ['$scope', '$resource', 'commonservice','$timeout','$
         $scope.currentPage = 0;        
         $scope.pageSize = 8;
         $scope.data = [];        
-
+        var isadmin = false;
+        var User = $resource('/api/authentication');
+        User.get({}, function(user) {            
+            if(user.user != null && user.user.username != undefined && user.user.username != null && user.user.username != '') {
+                //$scope.username = user.user.username;
+                //$scope.loggedIn = true;                               
+                isadmin = user.user.isadmin;
+                /*try {
+                    angular.element(document.querySelectorAll('[selector="productList"]')).scope().isadmin = user.user.isadmin;
+                }                
+                catch(e) {}
+                commonservice.setIsAdmin(user.user.isadmin);
+                commonservice.setIsLoggedIn(true); */
+            }
+        });    
         var Products = $resource('/api/products');                
         Products.query(function(products){
             $scope.products = products;  
             if($scope.products != null) {
                 angular.forEach($scope.products, function(value, key) {
                     value.myquantity = 1;
-                });
-                $scope.data = $scope.products;
+                    if(!value.safedelete || isadmin) {
+                        $scope.data.push(value);        
+                    }
+                });                
+                //$scope.data = $scope.products;
             };  
         }); 
 
