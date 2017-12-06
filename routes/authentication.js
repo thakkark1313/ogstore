@@ -81,7 +81,7 @@ router.post('/login', function(req, res, next) {
 });
 
 router.get('/logout', function(req, res) {
-      global.userid = '';
+      //global.userid = '';
       req.logout();
       res.redirect('/');
 });
