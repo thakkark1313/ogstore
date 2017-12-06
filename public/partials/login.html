@@ -27,7 +27,8 @@
 					  <input ng-model="susername" type="text" name="username" placeholder="Username" required ng-blur="validateUserName()">
 					  <label ng-show="signupform.username.$touched && signupform.username.$invalid" class="login_error_label">Username is required</label>
 					  <label ng-show="userexistsmessage" class="login_error_label">{{usernamemessagetxt}}</label>
-					  <input ng-model="password" type="password" name="password" placeholder="Password" required="" >
+					  <input ng-model="password" type="password" name="password" placeholder="Password" required="" id="suppassword" ng-keyup="checkPasswordStrength()">
+					  <span id="pwdresult"></span>
 					  <label ng-show="signupform.password.$touched && signupform.password.$invalid" class="login_error_label">Password is required</label>
 					  <input ng-model="semail" type="email" name="email" placeholder="Email Address" required="">
 					  <label ng-show="signupform.email.$touched && signupform.email.$invalid" class="login_error_label">Email is required</label>
