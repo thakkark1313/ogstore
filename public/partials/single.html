@@ -66,6 +66,18 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 	</div>-->
 <!-- //products-breadcrumb -->
 <!-- banner -->
+	<div ng-if="showSuccess">
+	  	<div class="isa_success">
+	     	<i class="fa fa-check"></i>
+	     	{{successmessage}}
+	  	</div>		  		 
+	</div>
+	<div ng-if="showFailure">
+		<div class="isa_error">
+				<i class="fa fa-times-circle"></i>
+			{{failuremessage}}
+		</div>		  
+	</div>
 	<div class="banner">
 		<div ng-include="'partials/bannerleft.html'"></div>
 		<div class="w3l_banner_nav_right">
@@ -100,24 +112,22 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 						<h4>In Stock :</h4>
 						<p>{{product.quantity}}</p>
 					</div>
+					<div class="w3agile_description">
+						<label>Quantity :</label> <input type="number" name="quantity" min="1" max="10" default="1" ng-model="product.myquantity"/>
+					</div>
 					<div class="snipcart-item block">
 						<div class="snipcart-thumb agileinfo_single_right_snipcart">
 							<h4>Price :</h4>
 							<h4>{{product.price | currency}}</h4>
 						</div>
 						<div class="snipcart-details agileinfo_single_right_details">
-							<form action="#" method="post">
-								<fieldset>
-									<input type="hidden" name="cmd" value="_cart" />
-									<input type="hidden" name="add" value="1" />
-									<input type="hidden" name="business" value=" " />
-									<input type="hidden" name="item_name" value="pulao basmati rice" />
-									<input type="hidden" name="amount" value="21.00" />
-									<input type="hidden" name="discount_amount" value="1.00" />
-									<input type="hidden" name="currency_code" value="USD" />
-									<input type="hidden" name="return" value=" " />
-									<input type="hidden" name="cancel_return" value=" " />
-									<input type="submit" name="submit" value="Add to cart" class="button" />
+							<form  method="post">
+								<fieldset>																								
+											<input type="hidden" name="item_name" value="{{product.title}}" />
+											<input type="hidden" name="amount" value="{{product.price}}" />													
+										    <input type="hidden" name="currency_code" value="USD" />																					
+											<input type="submit" name="submit" value="Add to cart" class="button" ng-click="addtocart(product)"/>
+
 								</fieldset>
 							</form>
 							<div>

@@ -48,8 +48,56 @@ router.delete('/cart', function(req, res) {
     var collection = db.get('cart');          
     collection.remove({_id:req.query.id}, function(err, cartitems)
     {           
-        if (err) throw err;    
-        res.json(cartitems);
+        if (err)
+        {            
+            res.json({result: false, message: 'Error occured while adding product to cart.'});
+            throw err;    
+        } 
+        else
+        {
+
+        }
+        res.json({result: true, message: 'Successful'});
+    }); 
+});
+
+
+router.get('/history', function(req, res) {  
+    var collection = db.get('orders');  
+    var collection1 = db.get('products');      
+    var tempid = global.userid;
+    var tmp = 1;
+    var ret = [];  
+    var total = 0;
+    collection.find({userid:tempid}, function(err, orderitems)
+    {                       
+        if (err) throw err;              
+        var i = 0;
+        async.forEach(orderitems, function(orderObj,callback) {             
+            collection1.findOne({_id:orderObj.productid},function(err,product){                
+                i++;
+                if (err) throw err;                                        
+                for (x in  product)
+                {
+                    if (x == "title" || x == "price" || x == "picture" )
+                    {                    
+                        orderObj[x] = product[x];
+                    }
+                }          
+                orderObj["acprice"] = orderObj["price"] * orderObj["quantity"];  
+                orderObj["acprice"] = orderObj["acprice"].toFixed(2);
+                total += orderObj["acprice"];                
+                ret.push(orderObj);                                        
+                if (i == orderitems.length)
+                {
+                    ret["total"] = total;                    
+                    res.json(ret);                    
+                }
+            });            
+            callback();
+        }, function(err) {            
+            if (err) return next(err);                        
+        });
     }); 
 });
 
@@ -57,7 +105,7 @@ router.delete('/cart', function(req, res) {
 router.get('/cart', function(req, res) {  
     var collection = db.get('cart');  
     var collection1 = db.get('products');      
-    var tempid = 1;// parseInt(req.params.id);    
+    var tempid = global.userid;
     var tmp = 1;
     var ret = [];  
     var total = 0;
@@ -102,7 +150,7 @@ router.get('/cart', function(req, res) {
 router.post('/orders', function(req, res){    
     var collection = db.get('orders');    
     collection.insert({
-        userid: 1,
+        userid: global.userid,
         productid: req.body.productid,
         quantity:req.body.quantity,
         price: req.body.price
@@ -116,8 +164,8 @@ router.post('/orders', function(req, res){
 router.post('/addtocart', function(req, res){
     var collection = db.get('cart');
     var tempid = req.body.pid;
-    var qty = parseInt(req.body.qty);
-    var t_userid = 1;
+    var qty = parseInt(req.body.qty);    
+    var t_userid = global.userid;    
     collection.findOne({productid:tempid},function(err,product){
         if(err) 
         {

@@ -38,13 +38,14 @@ router.post('/register', function(req, res) {
     });
 });
 
-router.get('/login', function(req, res) {
+router.get('/login', function(req, res) {      
       res.render('login', { user : req.user });
 });
 
-router.post('/login', passport.authenticate('local'), function(req, res) {
+router.post('/login', passport.authenticate('local'), function(req, res) {      
       res.redirect('/');
   	  global.userid = req.body.username;
+      console.log(req.body.username);
 });
 
 router.get('/logout', function(req, res) {

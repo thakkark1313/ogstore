@@ -17,6 +17,10 @@ app.config(['$routeProvider', function($routeProvider){
         .when('/cart', {         
             templateUrl: 'partials/checkout.html',
             controller : 'CartCtrl'
+        })
+        .when('/history', {         
+            templateUrl: 'partials/history.html',
+            controller : 'HistoryCtrl'
         })        
         .when('/login', {
             templateUrl: 'partials/login.html',            
@@ -34,6 +38,7 @@ app.config(['$routeProvider', function($routeProvider){
             templateUrl: 'partials/payment.html',
             controller : 'CheckoutCtrl'
         })
+
         .otherwise({
             redirectTo: '/'
         });
@@ -137,7 +142,7 @@ app.controller('LeftBannerCtrl', ['$scope', '$resource', '$routeParams',
 
 
 app.controller('HomeCtrl', ['$scope', '$resource', 'commonservice','$timeout','$filter', 
-    function($scope, $resource, commonservice, $timeout,$filter){ 
+    function($scope, $resource, commonservice, $timeout,$filter){         
         $scope.currentPage = 0;        
         $scope.pageSize = 8;
         $scope.data = [];        
@@ -231,14 +236,43 @@ app.filter('startFrom', function() {
     }
 });
 
-app.controller('ProductCtrl', ['$scope', '$resource', '$location', '$routeParams', 'commonservice', 
-    function($scope, $resource, $location, $routeParams, commonservice){        
+app.controller('ProductCtrl', ['$scope', '$resource', '$location', '$routeParams', 'commonservice','$timeout' ,
+    function($scope, $resource, $location, $routeParams, commonservice,$timeout){        
         $scope.isadmin = commonservice.getIsAdmin();
         $scope.editproduct = false;
+
         var Products = $resource('/api/products/:id',{id:'@_id'});        
         Products.get({ id: $routeParams.id }, function(product){
+            product.myquantity = 1;
             $scope.product = product;
         });
+
+        $scope.addtocart = function (product)
+        {                      
+            Products = $resource('/api/products/addtocart');
+            Products.save({pid:product._id, qty:product.myquantity}, function(response) 
+            {                                       
+                $('#toTopHover').click();                
+                if(response.result) {                                        
+                    $scope.showFailure = false;
+                    $scope.showSuccess = true;                           
+                    $scope.successmessage = response.message;
+                    $timeout(function() {
+                        $scope.showSuccess = false;    
+                    }, 2000);             
+
+                }                
+                else {                    
+                    $scope.showSuccess = false;
+                    $scope.showFailure = true;                                        
+                    $scope.failuremessage = response.message;
+                    $timeout(function() {
+                        $scope.showFailure = false;    
+                    }, 2000);             
+                }           
+            });                        
+        };
+
         $scope.safeDelete = function (product){
             Delete = $resource('/api/products/safedelete');
             Delete.save({productid:product._id}, function(response) {
@@ -268,8 +302,8 @@ app.controller('ProductCtrl', ['$scope', '$resource', '$location', '$routeParams
         };
 }]);
 
-app.controller('CartCtrl', ['$scope', '$resource', '$location', '$routeParams', 'commonservice','$route', 
-    function($scope, $resource, $location, $routeParams, commonservice,$route){
+app.controller('CartCtrl', ['$scope', '$resource', '$location', '$routeParams', 'commonservice','$route','$timeout', 
+    function($scope, $resource, $location, $routeParams, commonservice,$route,$timeout){
         var Cart = $resource('/api/products/cart');
         $scope.empty = true;
         $scope.notempty = false;
@@ -317,8 +351,11 @@ app.controller('CartCtrl', ['$scope', '$resource', '$location', '$routeParams', 
         {                    
             // console.dir($scope.cartitems);
             // remove items from cart
-            var userdid = 1;            
-            var orders = $resource('/api/products/orders');                                                            
+            // var userid = global.userid;   
+                    
+            var orders = $resource('/api/products/orders');   
+            // var fine = true;
+            // var cnt = 1;                                                         
             $scope.cartitems.forEach(function(cartObj)
             {
                 orders.save({userid:cartObj.userid, productid:cartObj.productid, quantity:cartObj.quantity,price:cartObj.acprice}, function() 
@@ -331,18 +368,72 @@ app.controller('CartCtrl', ['$scope', '$resource', '$location', '$routeParams', 
                     var cproduct = $resource('/api/products/editproduct');      
                     cproduct.save({_id:cartObj.productid, quantity:product.quantity - parseInt(cartObj.quantity), title:product.title, description: product.description, price:product.price},function()
                     {
-                        Cart.delete({ id: cartObj._id }, function(cartsobj){
-                            
+                        Cart.delete({ id: cartObj._id }, function(response){
+
+                            // cnt++;
+                            // fine = fine & response.result;                                
+                            /*if (cnt  == $scope.cartitems.length)
+                            {                                
+                                $('#toTopHover').click();                            
+                                if(fine) {                                        
+                                    $scope.showFailure = false;
+                                    $scope.showSuccess = true;                           
+                                    $scope.successmessage = response.message;
+                                    $timeout(function() {
+                                        $scope.showSuccess = false;    
+                                    }, 2000);             
+
+                                }                
+                                else {                    
+                                    $scope.showSuccess = false;
+                                    $scope.showFailure = true;                                        
+                                    $scope.failuremessage = response.message;
+                                    $timeout(function() {
+                                        $scope.showFailure = false;    
+                                    }, 2000);             
+                                }    
+                                $route.reload();
+                            } */                           
                         });
-                    });
-                //var cproduct = $resource('/api/products/editproduct');                
-                // console.log("here");
-                // console.dir(cproduct);
-                //cproduct.save({_id:cartObj.productid, quantity:parseInt(cartObj.quantity)},function(){
+                    });                
                 });                
-            });
+            });            
         }
     
+    }]);    
+app.controller('HistoryCtrl', ['$scope', '$resource', '$location', '$routeParams', 'commonservice','$route','$timeout', 
+    function($scope, $resource, $location, $routeParams, commonservice,$route,$timeout){
+        var Hist = $resource('/api/products/history');
+        $scope.empty = true;
+        $scope.notempty = false;
+        var total = 0;            
+        Hist.query(function(historyitems){                                    
+            $scope.historyitems = historyitems;
+            // console.dir(historyitems);            
+            if (historyitems.length == 0)          
+            {
+                // console.log("empty");
+                $scope.empty = true;
+                $scope.notempty = false;
+            }
+            else                
+            {
+                // console.log("notempty");
+                $scope.empty = false;
+                $scope.notempty = true;
+            }            
+        });                     
+        $scope.getTotal = function(){
+            var total = 0;            
+            if ($scope.historyitems != undefined && $scope.historyitems != null && $scope.historyitems.length != 0)
+            {
+                for (var i =0 ;i<$scope.historyitems.length;i++)
+                {
+                    total += parseFloat($scope.historyitems[i].acprice);
+                }       
+            }                        
+            return total.toFixed(2);
+        };        
     }]);    
 
 app.controller('AddProductCtrl', ['$scope', '$resource', '$timeout', '$window', 'Upload', 'commonservice', 
