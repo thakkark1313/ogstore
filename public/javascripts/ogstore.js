@@ -307,7 +307,7 @@ app.controller('CartCtrl', ['$scope', '$resource', '$location', '$routeParams', 
         var Cart = $resource('/api/products/cart');
         $scope.empty = true;
         $scope.notempty = false;
-        var total = 0;            
+        // var total = 0;            
         Cart.query(function(cartitems){                                    
             $scope.cartitems = cartitems;            
             if (cartitems.length == 0)          
@@ -318,17 +318,24 @@ app.controller('CartCtrl', ['$scope', '$resource', '$location', '$routeParams', 
             }
             else                
             {
+                $scope.getTotal();
                 console.log("notempty");
                 $scope.empty = false;
                 $scope.notempty = true;
             }            
         });             
         
-        $scope.changeqty = function(){            
-
+        $scope.changeqty = function(cartObj){             
+            var Cart = $resource('/api/products/editcart');
+            Cart.save({_id:cartObj._id,quantity:cartObj.quantity}, function() 
+            {                    
+                $scope.getTotal();
+                // $route.reload();
+            });
         };
 
         $scope.removeItem = function(cartid){
+            console.log(cartid);
             Cart.delete({ id:  cartid}, function(cartObj){                    
                 $route.reload();
             });
@@ -340,10 +347,11 @@ app.controller('CartCtrl', ['$scope', '$resource', '$location', '$routeParams', 
             {
                 for (var i =0 ;i<$scope.cartitems.length;i++)
                 {
+                    // $scope.cartitems[i].acprice = parseFloat($scope.cartitems[i].price) * parseInt($scope.cartitems[i].quantity);  
                     total += parseFloat($scope.cartitems[i].acprice);
                 }       
             }                        
-            return total.toFixed(2);
+            $scope.totalCost =  total.toFixed(2);
         };
 
 
@@ -354,50 +362,82 @@ app.controller('CartCtrl', ['$scope', '$resource', '$location', '$routeParams', 
             // var userid = global.userid;   
                     
             var orders = $resource('/api/products/orders');   
-            // var fine = true;
-            // var cnt = 1;                                                         
+            var fine = true;
+            var cnt = 0;                                                         
+            var errormsg = "";  
             $scope.cartitems.forEach(function(cartObj)
-            {
-                orders.save({userid:cartObj.userid, productid:cartObj.productid, quantity:cartObj.quantity,price:cartObj.acprice}, function() 
-                {                    
-                });                
+            {    
+                cnt++;                          
                 var prod = $resource('/api/products/'.concat(cartObj.productid));
                 prod.get({}, function(product)
-                {
-                    // console.dir(product);  
-                    var cproduct = $resource('/api/products/editproduct');      
-                    cproduct.save({_id:cartObj.productid, quantity:product.quantity - parseInt(cartObj.quantity), title:product.title, description: product.description, price:product.price},function()
+                {       
+                                                   
+                    if (product.quantity > 0)
                     {
-                        Cart.delete({ id: cartObj._id }, function(response){
+                        var cproduct = $resource('/api/products/editproduct');      
+                            orders.save({userid:cartObj.userid, productid:cartObj.productid, quantity:cartObj.quantity,price:cartObj.acprice}, function() 
+                            {                    
+                            });  
+                            cproduct.save({_id:cartObj.productid, quantity:product.quantity - parseInt(cartObj.quantity), title:product.title, description: product.description, price:product.price},function()
+                            {                        
+                                 Cart.delete({ id: cartObj._id }, function(response){                                
+                                    fine = fine & response.result;                                                           
+                                    if (cnt  == $scope.cartitems.length)
+                                    {                                
+                                        $('#toTopHover').click();                            
+                                        if(fine) {                                        
+                                            $scope.showFailure = false;
+                                            $scope.showSuccess = true;                           
+                                            $scope.successmessage = response.message + "." + errormsg;
+                                            $timeout(function() {
+                                                $scope.showSuccess = false;    
+                                                $route.reload();
+                                            }, 2000);             
 
-                            // cnt++;
-                            // fine = fine & response.result;                                
-                            /*if (cnt  == $scope.cartitems.length)
-                            {                                
-                                $('#toTopHover').click();                            
-                                if(fine) {                                        
-                                    $scope.showFailure = false;
-                                    $scope.showSuccess = true;                           
-                                    $scope.successmessage = response.message;
-                                    $timeout(function() {
-                                        $scope.showSuccess = false;    
-                                    }, 2000);             
-
-                                }                
-                                else {                    
-                                    $scope.showSuccess = false;
-                                    $scope.showFailure = true;                                        
-                                    $scope.failuremessage = response.message;
-                                    $timeout(function() {
-                                        $scope.showFailure = false;    
-                                    }, 2000);             
-                                }    
-                                $route.reload();
-                            } */                           
-                        });
-                    });                
+                                        }                
+                                        else {                    
+                                            $scope.showSuccess = false;
+                                            $scope.showFailure = true;                                        
+                                            $scope.failuremessage = response.message;
+                                            $timeout(function() {
+                                                $scope.showFailure = false;    
+                                            }, 2000);             
+                                        }                                    
+                                    }                        
+                                 });
+                            });
+                    }
+                    else
+                    {
+                        errormsg = "Maybe some Items in your cart are out of stock";                            
+                    }
+                                    
                 });                
-            });            
+            }); 
+
+           /* Cart.delete({}, function(response){
+                $('#toTopHover').click();                            
+                if(response.result) {                                        
+                    $scope.showFailure = false;
+                    $scope.showSuccess = true;                           
+                    $scope.successmessage = response.message;
+                    $timeout(function() {
+                        $scope.showSuccess = false; 
+                        $route.reload();   
+                    }, 2000);             
+
+                }                
+                else {                    
+                    $scope.showSuccess = false;
+                    $scope.showFailure = true;                                        
+                    $scope.failuremessage = response.message;
+                    $timeout(function() {
+                        $scope.showFailure = false;                         
+                    }, 2000);             
+                    
+                }
+
+            });*/
         }
     
     }]);    

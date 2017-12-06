@@ -46,18 +46,19 @@ router.get('/categories/:id', function(req, res) {
 
 router.delete('/cart', function(req, res) {  
     var collection = db.get('cart');          
+    // console.log(req.body.id);
     collection.remove({_id:req.query.id}, function(err, cartitems)
     {           
         if (err)
         {            
-            res.json({result: false, message: 'Error occured while adding product to cart.'});
+            res.json({result: false, message: 'Error during checkout.'});
             throw err;    
         } 
         else
         {
 
         }
-        res.json({result: true, message: 'Successful'});
+        res.json({result: true, message: 'Checkout Successful'});
     }); 
 });
 
@@ -160,6 +161,30 @@ router.post('/orders', function(req, res){
         res.json(orderObj);
     });
 });
+
+router.post('/editcart', function(req, res) {    
+    var collection = db.get('cart');        
+    // console.dir(req.body);
+    collection.update(
+        {
+            _id: req.body._id
+        },
+        {
+            $set: {          
+
+                quantity: req.body.quantity,                
+            }
+        }, 
+        function(err, obj) {
+            if(err) {
+                res.json({result: false});
+                throw err;
+            }
+
+            res.json({result: true});
+    });
+});
+
 
 router.post('/addtocart', function(req, res){
     var collection = db.get('cart');

@@ -49,6 +49,7 @@ router.post('/login', passport.authenticate('local'), function(req, res) {
 });
 
 router.get('/logout', function(req, res) {
+      global.userid = '';
       req.logout();
       res.redirect('/');
 });
