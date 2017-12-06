@@ -55,8 +55,7 @@ router.delete('/cart', function(req, res) {
             throw err;    
         } 
         else
-        {
-
+        {                
         }
         res.json({result: true, message: 'Checkout Successful'});
     }); 
@@ -109,7 +108,7 @@ router.get('/cart', function(req, res) {
     var tempid = global.userid;
     var tmp = 1;
     var ret = [];  
-    var total = 0;
+    // var total = 0;
     collection.find({userid:tempid}, function(err, cartitems)
     {           
             
@@ -127,13 +126,13 @@ router.get('/cart', function(req, res) {
                         cartObj[x] = product[x];
                     }
                 }          
-                cartObj["acprice"] = cartObj["price"] * cartObj["quantity"];  
-                cartObj["acprice"] = cartObj["acprice"].toFixed(2);
-                total += cartObj["acprice"];                
+                // cartObj["acprice"] = cartObj["price"] * cartObj["quantity"];  
+                // cartObj["acprice"] = cartObj["acprice"].toFixed(2);
+                // total += cartObj["acprice"];                
                 ret.push(cartObj);                                        
                 if (i == cartitems.length)
                 {
-                    ret["total"] = total;
+                    // ret["total"] = total;
                     // console.log(total);
                     res.json(ret);
                     // console.dir(json(ret));

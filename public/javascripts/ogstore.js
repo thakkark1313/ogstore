@@ -347,7 +347,7 @@ app.controller('CartCtrl', ['$scope', '$resource', '$location', '$routeParams', 
             {
                 for (var i =0 ;i<$scope.cartitems.length;i++)
                 {
-                    // $scope.cartitems[i].acprice = parseFloat($scope.cartitems[i].price) * parseInt($scope.cartitems[i].quantity);  
+                    $scope.cartitems[i].acprice = parseFloat($scope.cartitems[i].price) * parseInt($scope.cartitems[i].quantity);  
                     total += parseFloat($scope.cartitems[i].acprice);
                 }       
             }                        
@@ -364,16 +364,15 @@ app.controller('CartCtrl', ['$scope', '$resource', '$location', '$routeParams', 
             var orders = $resource('/api/products/orders');   
             var fine = true;
             var cnt = 0;                                                         
-            var errormsg = "";  
+            var errormsg = "";              
             $scope.cartitems.forEach(function(cartObj)
             {    
                 cnt++;                          
                 var prod = $resource('/api/products/'.concat(cartObj.productid));
                 prod.get({}, function(product)
                 {       
-                                                   
                     if (product.quantity > 0)
-                    {
+                    {                        
                         var cproduct = $resource('/api/products/editproduct');      
                             orders.save({userid:cartObj.userid, productid:cartObj.productid, quantity:cartObj.quantity,price:cartObj.acprice}, function() 
                             {                    
