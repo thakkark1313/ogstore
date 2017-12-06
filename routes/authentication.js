@@ -42,10 +42,42 @@ router.get('/login', function(req, res) {
       res.render('login', { user : req.user });
 });
 
-router.post('/login', passport.authenticate('local'), function(req, res) {      
+/*router.post('/login',  function(req, res) { 
+      passport.authenticate('local', {session : false}, function(err, user, info) {
+        if(!user) {
+          res.redirect('/');
+        }
+      })
+      if(err) {
+        res.redirect('/'); 
+        throw err;
+      }      
       res.redirect('/');
   	  global.userid = req.body.username;
-      console.log(req.body.username);
+});*/
+
+router.post('/login', function(req, res, next) {
+    passport.authenticate('local', {session : false},
+    function(err, user, info) {
+        if (err) {
+            return res.json({
+                message: "Internal Server Error!"
+            })
+        } else if (!user) {                    
+            return res.json({
+                message: "No Such User!"
+            })
+        }
+        req.logIn(user, function(err) {
+            if (err) {
+                return res.json({
+                    message: "Login Failure!"
+                })
+            }
+            res.redirect('/');
+            global.userid = req.body.username;            
+        });
+    })(req, res, next);
 });
 
 router.get('/logout', function(req, res) {
